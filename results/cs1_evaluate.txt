@@ -1,0 +1,27 @@
+Best fixed PID (from grid_search.py): Kp = 10.50, tau_i = 1.15, tau_d = 0.00
+Step test 0.0 -> 1.0 on CS1: G(s) = 1/(s - 1)
+Controller                       Overshoot % Settling s       ISE       IAE Completed Beats authors on all 4
+Classical PI                            48.8       4.00     0.401     0.914       yes                     no
+Best fixed PID                          19.9       2.50     0.122     0.310       yes                     no
+RL improved_seed0                       33.9       2.80     0.120     0.296       yes                     no
+RL improved_seed1                       13.7       3.10     0.109     0.284       yes                     no
+RL improved_seed2                    10037.5       0.80  2476.529    35.928        no                     no
+RL improved_v2_seed0                    13.2       3.50     0.114     0.328       yes                     no
+RL improved_v2_seed1                    15.7       3.40     0.112     0.309       yes                     no
+RL improved_v2_seed2                    12.2       3.40     0.113     0.317       yes                     no
+RL improved_v4_seed0                    16.0       3.70     0.123     0.378       yes                     no
+RL improved_v4n2_seed0                  32.0       1.30     0.128     0.255       yes                    yes
+RL improved_v4n2_seed1                  31.5       1.40     0.129     0.260       yes                    yes
+RL improved_v4n2_seed2                  32.5       1.40     0.126     0.252       yes                    yes
+RL improved_v4n_seed0                   21.4       2.20     0.121     0.292       yes                     no
+RL improved_v4n_seed1                   24.9       2.20     0.133     0.323       yes                     no
+RL improved_v4n_seed2                   19.1       2.00     0.114     0.253       yes                     no
+RL paper_seed0                          67.9       2.00     0.162     0.296       yes                     no
+RL paper_seed1                          46.6       2.30     0.129     0.279       yes                     no
+RL paper_seed2                          51.6       2.40     0.136     0.298       yes                     no
+Authors' agent (their files)            57.8       1.70     0.142     0.266         -                      -
+AVERAGE improved (3 seeds)            3361.7       2.23   825.586    12.170         -                     no
+AVERAGE improved_v2 (3 seeds)           13.7       3.43     0.113     0.318         -                     no
+AVERAGE improved_v4n2 (3 seeds)         32.0       1.37     0.127     0.256         -                    yes
+AVERAGE improved_v4n (3 seeds)          21.8       2.13     0.123     0.289         -                     no
+AVERAGE paper (3 seeds)                 55.4       2.23     0.143     0.291         -                     no

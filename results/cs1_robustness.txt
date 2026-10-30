@@ -1,0 +1,225 @@
+Robustness test on CS1: G(s) = 1/(s - 1), step test 0.0 -> 1.0
+
+=== nominal  (sensor noise std 0.0, process changes none, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Classical PI                            48.8       4.00     0.401     0.914        yes
+Best fixed PID                          19.9       2.50     0.122     0.310        yes
+Best fixed 2-DOF PID                     0.1       0.10     0.100     0.101        yes
+RL improved_seed0                       33.9       2.80     0.120     0.296        yes
+RL improved_seed1                       13.7       3.10     0.109     0.284        yes
+RL improved_seed2                    10037.5       0.80  2476.529    35.928         no
+RL improved_v2_seed0                    13.2       3.50     0.114     0.328        yes
+RL improved_v2_seed1                    15.7       3.40     0.112     0.309        yes
+RL improved_v2_seed2                    12.2       3.40     0.113     0.317        yes
+RL improved_v3_seed0                    14.0       3.20     0.111     0.291        yes
+RL improved_v3_seed1                    26.6       2.80     0.119     0.307        yes
+RL improved_v3_seed2                     0.0       5.40     0.296     0.875        yes
+RL improved_v4_seed0                    16.0       3.70     0.123     0.378        yes
+RL improved_v4n2_seed0                  32.0       1.30     0.128     0.255        yes
+RL improved_v4n2_seed1                  31.5       1.40     0.129     0.260        yes
+RL improved_v4n2_seed2                  32.5       1.40     0.126     0.252        yes
+RL improved_v4n_seed0                   21.4       2.20     0.121     0.292        yes
+RL improved_v4n_seed1                   24.9       2.20     0.133     0.323        yes
+RL improved_v4n_seed2                   19.1       2.00     0.114     0.253        yes
+RL paper_seed0                          67.9       2.00     0.162     0.296        yes
+RL paper_seed1                          46.6       2.30     0.129     0.279        yes
+RL paper_seed2                          51.6       2.40     0.136     0.298        yes
+
+=== noise 0.01  (sensor noise std 0.01, process changes none, mean of 10 noise seeds) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Classical PI                            49.0       4.79     0.404     0.985        yes
+Best fixed PID                          19.9      19.33     0.126     0.466        yes
+Best fixed 2-DOF PID                     3.1      19.28     0.104     0.282        yes
+RL improved_seed0                       33.9      19.94     0.129     0.538        yes
+RL improved_seed1                       14.0      19.93     0.123     0.596        yes
+RL improved_seed2                    10228.4       0.81  2608.691    37.035  no (0/10)
+RL improved_v2_seed0                    13.8      19.77     0.120     0.507        yes
+RL improved_v2_seed1                    15.6      19.90     0.119     0.509        yes
+RL improved_v2_seed2                    12.4      19.90     0.120     0.519        yes
+RL improved_v3_seed0                    16.3      19.95     0.163     0.974        yes
+RL improved_v3_seed1                    26.3      19.93     0.129     0.581        yes
+RL improved_v3_seed2                     5.2      19.93     0.303     1.081        yes
+RL improved_v4_seed0                    16.2      19.28     0.126     0.509        yes
+RL improved_v4n2_seed0                  32.4      19.33     0.132     0.437        yes
+RL improved_v4n2_seed1                  31.4      18.97     0.132     0.420        yes
+RL improved_v4n2_seed2                  32.8      19.26     0.129     0.424        yes
+RL improved_v4n_seed0                   21.8      19.33     0.125     0.462        yes
+RL improved_v4n_seed1                   24.9      18.97     0.136     0.469        yes
+RL improved_v4n_seed2                   19.1      19.59     0.119     0.443        yes
+RL paper_seed0                          68.1      19.92     0.189     0.805        yes
+RL paper_seed1                          46.7      19.94     0.138     0.522        yes
+RL paper_seed2                          51.8      19.92     0.145     0.533        yes
+
+=== noise 0.05  (sensor noise std 0.05, process changes none, mean of 10 noise seeds) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Classical PI                            50.1      19.78     0.429     1.293        yes
+Best fixed PID                          23.7      19.98     0.199     1.155        yes
+Best fixed 2-DOF PID                    15.6      19.98     0.171     1.010        yes
+RL improved_seed0                       34.4      20.00     0.308     1.689        yes
+RL improved_seed1                       33.5      20.00     0.418     2.105        yes
+RL improved_seed2                    10743.6       1.25  2965.093    41.873  no (0/10)
+RL improved_v2_seed0                    24.4      19.98     0.239     1.402        yes
+RL improved_v2_seed1                    26.3      19.98     0.261     1.508        yes
+RL improved_v2_seed2                    25.7      19.98     0.260     1.509        yes
+RL improved_v3_seed0                    59.9      20.00     1.318     4.097        yes
+RL improved_v3_seed1                    32.6      19.99     0.349     1.851        yes
+RL improved_v3_seed2                    26.4      19.99     0.494     2.124        yes
+RL improved_v4_seed0                    21.6      19.98     0.195     1.154        yes
+RL improved_v4n2_seed0                  34.1      19.99     0.210     1.194        yes
+RL improved_v4n2_seed1                  32.5      19.98     0.195     1.086        yes
+RL improved_v4n2_seed2                  33.6      19.99     0.199     1.135        yes
+RL improved_v4n_seed0                   24.3      19.98     0.205     1.204        yes
+RL improved_v4n_seed1                   27.4      19.98     0.196     1.101        yes
+RL improved_v4n_seed2                   24.0      19.97     0.215     1.275        yes
+RL paper_seed0                          68.8      19.99     0.812     3.047        yes
+RL paper_seed1                          47.1      19.99     0.304     1.635        yes
+RL paper_seed2                          52.3      19.99     0.303     1.606        yes
+
+=== a = 0.8  (sensor noise std 0.0, process changes {'a': 0.8}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Classical PI                            40.5       3.00     0.330     0.803        yes
+Best fixed PID                          18.7       2.40     0.118     0.288        yes
+Best fixed 2-DOF PID                     0.0       0.10     0.100     0.134        yes
+RL improved_seed0                       32.5       2.60     0.117     0.273        yes
+RL improved_seed1                       12.2       2.90     0.107     0.260        yes
+RL improved_seed2                    11106.0       0.90  3411.692    45.053         no
+RL improved_v2_seed0                    11.2       3.20     0.111     0.298        yes
+RL improved_v2_seed1                    14.0       3.10     0.109     0.282        yes
+RL improved_v2_seed2                    11.0       3.10     0.110     0.288        yes
+RL improved_v3_seed0                    12.8       3.00     0.109     0.269        yes
+RL improved_v3_seed1                    24.9       2.70     0.116     0.290        yes
+RL improved_v3_seed2                     0.0       5.60     0.305     0.900        yes
+RL improved_v4_seed0                    14.0       3.50     0.117     0.344        yes
+RL improved_v4n2_seed0                  29.2       1.30     0.125     0.247        yes
+RL improved_v4n2_seed1                  29.4       1.40     0.125     0.252        yes
+RL improved_v4n2_seed2                  29.2       1.40     0.122     0.243        yes
+RL improved_v4n_seed0                   18.7       2.10     0.118     0.275        yes
+RL improved_v4n_seed1                   23.2       2.10     0.129     0.306        yes
+RL improved_v4n_seed2                   17.0       1.90     0.111     0.237        yes
+RL paper_seed0                          66.2       1.80     0.160     0.292        yes
+RL paper_seed1                          45.1       2.10     0.127     0.263        yes
+RL paper_seed2                          50.1       2.20     0.133     0.282        yes
+
+=== a = 1.2  (sensor noise std 0.0, process changes {'a': 1.2}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Classical PI                            58.2       4.40     0.497     1.049        yes
+Best fixed PID                          21.2       2.50     0.127     0.333        yes
+Best fixed 2-DOF PID                     2.1       0.40     0.100     0.135        yes
+RL improved_seed0                       35.2       3.00     0.123     0.319        yes
+RL improved_seed1                       15.4       3.30     0.112     0.309        yes
+RL improved_seed2                    10869.7       0.80  2824.619    38.076         no
+RL improved_v2_seed0                    15.3       3.70     0.119     0.358        yes
+RL improved_v2_seed1                    17.5       3.60     0.116     0.335        yes
+RL improved_v2_seed2                    13.3       3.60     0.117     0.346        yes
+RL improved_v3_seed0                    15.1       3.40     0.113     0.313        yes
+RL improved_v3_seed1                    28.4       2.90     0.122     0.324        yes
+RL improved_v3_seed2                     0.0       5.30     0.288     0.849        yes
+RL improved_v4_seed0                    18.1       3.80     0.129     0.412        yes
+RL improved_v4n2_seed0                  34.8       1.30     0.131     0.262        yes
+RL improved_v4n2_seed1                  33.7       1.40     0.133     0.268        yes
+RL improved_v4n2_seed2                  36.1       1.40     0.130     0.261        yes
+RL improved_v4n_seed0                   24.1       2.30     0.125     0.308        yes
+RL improved_v4n_seed1                   26.7       2.20     0.138     0.340        yes
+RL improved_v4n_seed2                   21.4       2.00     0.118     0.269        yes
+RL paper_seed0                          69.6       2.00     0.164     0.302        yes
+RL paper_seed1                          48.1       2.40     0.132     0.294        yes
+RL paper_seed2                          53.2       2.50     0.140     0.314        yes
+
+=== K = 0.8  (sensor noise std 0.0, process changes {'K': 0.8}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Classical PI                            60.2       5.10     0.596     1.271        yes
+Best fixed PID                          21.0       2.60     0.130     0.346        yes
+Best fixed 2-DOF PID                     3.7       1.50     0.105     0.187        yes
+RL improved_seed0                       15.6       3.20     0.117     0.326        yes
+RL improved_seed1                       20.0       3.50     0.119     0.349        yes
+RL improved_seed2                     2157.7      20.00  1172.871   117.703        yes
+RL improved_v2_seed0                    16.3       3.80     0.122     0.384        yes
+RL improved_v2_seed1                    17.5       3.80     0.124     0.385        yes
+RL improved_v2_seed2                    16.4       3.70     0.121     0.374        yes
+RL improved_v3_seed0                    22.0       3.50     0.117     0.336        yes
+RL improved_v3_seed1                    24.2       3.00     0.131     0.365        yes
+RL improved_v3_seed2                     0.0       5.20     0.291     0.842        yes
+RL improved_v4_seed0                    18.1       4.00     0.141     0.461        yes
+RL improved_v4n2_seed0                  30.3       1.40     0.142     0.289        yes
+RL improved_v4n2_seed1                  32.3       1.40     0.151     0.324        yes
+RL improved_v4n2_seed2                  28.0       1.40     0.139     0.286        yes
+RL improved_v4n_seed0                   20.4       2.40     0.137     0.340        yes
+RL improved_v4n_seed1                   23.7       2.20     0.154     0.377        yes
+RL improved_v4n_seed2                   19.9       2.20     0.126     0.311        yes
+RL paper_seed0                          34.3       2.00     0.119     0.258        yes
+RL paper_seed1                          17.3       2.60     0.116     0.293        yes
+RL paper_seed2                          21.3       2.70     0.118     0.305        yes
+
+=== K = 1.2  (sensor noise std 0.0, process changes {'K': 1.2}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Classical PI                            41.4       2.90     0.304     0.738        yes
+Best fixed PID                          43.9       2.30     0.130     0.292        yes
+Best fixed 2-DOF PID                    20.0       0.70     0.105     0.168        yes
+RL improved_seed0                       60.6       2.60     0.171     0.379        yes
+RL improved_seed1                       69.4      20.00     7.289    11.555        yes
+RL improved_seed2                    12065.0       0.80  3583.383    43.234         no
+RL improved_v2_seed0                    33.3       3.10     0.120     0.306        yes
+RL improved_v2_seed1                    18.8       3.00     0.112     0.283        yes
+RL improved_v2_seed2                    34.6       3.00     0.123     0.309        yes
+RL improved_v3_seed0                   621.1      20.00   667.635   113.422        yes
+RL improved_v3_seed1                    17.3       2.90     0.112     0.269        yes
+RL improved_v3_seed2                     0.0       5.60     0.328     0.895        yes
+RL improved_v4_seed0                    13.2       3.40     0.115     0.330        yes
+RL improved_v4n2_seed0                  28.4       1.20     0.120     0.221        yes
+RL improved_v4n2_seed1                  23.5       1.30     0.119     0.236        yes
+RL improved_v4n2_seed2                  33.4       1.30     0.122     0.222        yes
+RL improved_v4n_seed0                   19.4       2.00     0.113     0.250        yes
+RL improved_v4n_seed1                   26.4       2.10     0.120     0.278        yes
+RL improved_v4n_seed2                   26.4       1.70     0.114     0.235        yes
+RL paper_seed0                         101.4      20.00     7.521    12.236        yes
+RL paper_seed1                          75.9       2.20     0.211     0.406        yes
+RL paper_seed2                          82.0       2.20     0.247     0.456        yes
+
+=== Summary: group averages (RL groups = mean of their seeds) ===
+
+Overshoot %               nominal noise 0.01 noise 0.05    a = 0.8    a = 1.2    K = 0.8    K = 1.2
+paper                        55.4       55.5       56.1       53.8       57.0       24.3       86.4
+improved_v2                  13.7       13.9       25.5       12.1       15.4       16.7       28.9
+improved_v3                  13.5       15.9       39.6       12.6       14.5       15.4      212.8
+improved_v4n2                32.0       32.2       33.4       29.3       34.8       30.2       28.4
+Classical PI                 48.8       49.0       50.1       40.5       58.2       60.2       41.4
+Best fixed PID               19.9       19.9       23.7       18.7       21.2       21.0       43.9
+Best fixed 2-DOF PID          0.1        3.1       15.6        0.0        2.1        3.7       20.0
+
+Settling s                nominal noise 0.01 noise 0.05    a = 0.8    a = 1.2    K = 0.8    K = 1.2
+paper                        2.23      19.93      19.99       2.03       2.30       2.43       8.13
+improved_v2                  3.43      19.86      19.98       3.13       3.63       3.77       3.03
+improved_v3                  3.80      19.94      19.99       3.77       3.87       3.90       9.50
+improved_v4n2                1.37      19.19      19.99       1.37       1.37       1.40       1.27
+Classical PI                 4.00       4.79      19.78       3.00       4.40       5.10       2.90
+Best fixed PID               2.50      19.33      19.98       2.40       2.50       2.60       2.30
+Best fixed 2-DOF PID         0.10      19.28      19.98       0.10       0.40       1.50       0.70
+
+ISE                       nominal noise 0.01 noise 0.05    a = 0.8    a = 1.2    K = 0.8    K = 1.2
+paper                       0.143      0.157      0.473      0.140      0.146      0.118      2.660
+improved_v2                 0.113      0.120      0.253      0.110      0.117      0.122      0.118
+improved_v3                 0.175      0.198      0.721      0.177      0.174      0.180    222.691
+improved_v4n2               0.127      0.131      0.201      0.124      0.131      0.144      0.120
+Classical PI                0.401      0.404      0.429      0.330      0.497      0.596      0.304
+Best fixed PID              0.122      0.126      0.199      0.118      0.127      0.130      0.130
+Best fixed 2-DOF PID        0.100      0.104      0.171      0.100      0.100      0.105      0.105
+
+IAE                       nominal noise 0.01 noise 0.05    a = 0.8    a = 1.2    K = 0.8    K = 1.2
+paper                       0.291      0.620      2.096      0.279      0.303      0.285      4.366
+improved_v2                 0.318      0.512      1.473      0.289      0.346      0.381      0.299
+improved_v3                 0.491      0.879      2.691      0.487      0.495      0.514     38.195
+improved_v4n2               0.256      0.427      1.138      0.248      0.264      0.299      0.226
+Classical PI                0.914      0.985      1.293      0.803      1.049      1.271      0.738
+Best fixed PID              0.310      0.466      1.155      0.288      0.333      0.346      0.292
+Best fixed 2-DOF PID        0.101      0.282      1.010      0.134      0.135      0.187      0.168
+
+Completed runs            nominal noise 0.01 noise 0.05    a = 0.8    a = 1.2    K = 0.8    K = 1.2
+paper                         3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v2                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v3                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v4n2                 3/3      30/30      30/30        3/3        3/3        3/3        3/3
+Classical PI                  1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Best fixed PID                1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Best fixed 2-DOF PID          1/1      10/10      10/10        1/1        1/1        1/1        1/1
+
+Settling 20.00 s = still outside the 2 % band at the end of the test.

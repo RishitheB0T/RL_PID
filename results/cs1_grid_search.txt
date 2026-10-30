@@ -1,0 +1,3 @@
+Grid search on the CS1: G(s) = 1/(s - 1) step test (smallest ISE): 68921 gain sets x 21 values of b
+  Best fixed PID      : Kp = 10.50, tau_i = 1.15, tau_d = 0.00, b = 1.00  ->  overshoot 19.9 %, settling 2.50 s, ISE 0.122, IAE 0.310, completed yes
+  Best fixed 2-DOF PID: Kp = 10.50, tau_i = 1.80, tau_d = 0.00, b = 0.85  ->  overshoot 0.1 %, settling 0.10 s, ISE 0.100, IAE 0.101, completed yes
