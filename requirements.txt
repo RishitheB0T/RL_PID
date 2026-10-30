@@ -1,0 +1,7 @@
+# Exact versions used for every result in REPORT.md (Python 3.14.7, CPU only)
+numpy==2.5.3
+torch==2.14.0
+gymnasium==1.3.0
+stable-baselines3==2.9.0
+matplotlib==3.11.2
+pillow==12.3.0
