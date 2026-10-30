@@ -13,6 +13,9 @@ rlpid-env/
 Thumbs.db
 .DS_Store
 
+# Build output of the STM32 firmware and the PC check
+stm32/build/
+
 # Test agents and scratch files
 runs/*/*_seed9/
 *.tmp
