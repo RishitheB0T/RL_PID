@@ -9,7 +9,7 @@ import numpy as np
 from cases import load_case
 from core.pid import PID
 from core.tools import fixed, load_agent, run_test, score, completed, beats
-from core.versions import VERSIONS
+from core.versions import VERSIONS, gain_ranges
 
 CS1 = load_case("cs1")
 
@@ -33,8 +33,14 @@ class TestBuildingBlocks(unittest.TestCase):
     def test_slider_to_gain_mapping(self):
         """-1 -> lowest, +1 -> highest value of the version's ranges."""
         final = VERSIONS["improved_v4n2"]
-        self.assertEqual(tuple(map(float, final.to_gains([-1, -1, -1]))), (0.0, 0.05, 0.0, 1.0))
-        self.assertEqual(tuple(map(float, final.to_gains([1, 1, 1]))), (20.0, 0.5, 0.2, 1.0))
+        ranges = gain_ranges("improved_v4n2", CS1)
+        self.assertEqual(tuple(map(float, final.to_gains([-1, -1, -1], ranges))), (0.0, 0.05, 0.0, 1.0))
+        self.assertEqual(tuple(map(float, final.to_gains([1, 1, 1], ranges))), (20.0, 0.5, 0.2, 1.0))
+
+    def test_v5_uses_the_case_ranges(self):
+        """improved_v5 on CS1 has exactly the ranges of improved_v4n2."""
+        for a, b in zip(gain_ranges("improved_v5", CS1), gain_ranges("improved_v4n2", CS1)):
+            np.testing.assert_array_equal(a, b)
 
 
 def as_printed(m):
@@ -55,10 +61,10 @@ class TestMeasuredResults(unittest.TestCase):
         self.assertEqual(beats(m, CS1.AUTHORS), "yes")
 
 
-class TestCaseStudy2Template(unittest.TestCase):
+class TestCaseTemplate(unittest.TestCase):
     def test_blank_template_says_what_is_missing(self):
         with self.assertRaises(SystemExit) as stop:
-            load_case("cs2")
+            load_case("template")
         self.assertIn("Still blank", str(stop.exception))
 
 

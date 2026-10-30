@@ -1,8 +1,8 @@
 # core/versions.py : the reward VERSIONS - what the agent is trained to want
 # ---------------------------------------------------------------
 # A "version" = reward function + crash penalty + gain ranges (+ optional setpoint weight b).
-# All seven versions of this project are in ONE table at the bottom of this file, in the order
-# they were tried. "improved_v4n2" is the final one.
+# All eight versions of this project are in ONE table at the bottom of this file, in the order
+# they were tried. "improved_v4n2" is the final one for CS1; "improved_v5" is its general form.
 #
 # The agent never outputs gains directly. It outputs "sliders" between -1 and +1, which are
 # stretched into the gain ranges of its version:  -1 -> lowest value,  +1 -> highest value.
@@ -51,7 +51,7 @@ NARROW2 = (np.array([0.0, 0.05, 0.0]), np.array([20.0, 0.5, 0.2]))   # tau_i <= 
 class Version:
     reward: object            # the reward function of one sample
     crash: str                # crash penalty: "small" = -20 (authors), "worst" = -5000 per step left
-    ranges: tuple             # (low, high) gain ranges, see above
+    ranges: object            # (low, high) gain ranges, see above - or "case": the case file's GAIN_RANGES
     weight_b: bool = False    # True = the agent has a 4th slider for the setpoint weight b
     note: str = ""            # one-line description
 
@@ -60,16 +60,29 @@ class Version:
         """How many numbers the agent outputs: 3 gains, plus b for improved_v3."""
         return 4 if self.weight_b else 3
 
-    def to_gains(self, action):
-        """Sliders (-1..+1) -> (Kp, tau_i, tau_d, b)."""
+    def to_gains(self, action, ranges):
+        """Sliders (-1..+1) -> (Kp, tau_i, tau_d, b), stretched into ranges = (low, high)."""
         a = np.clip(np.asarray(action, dtype=float), -1.0, 1.0)     # keep sliders inside -1..+1
-        low, high = self.ranges
+        low, high = ranges
         Kp, tau_i, tau_d = low + (a[:3] + 1.0) / 2.0 * (high - low)  # -1 -> low, +1 -> high
         b = (a[3] + 1.0) / 2.0 if self.weight_b else 1.0             # -1 -> 0, +1 -> 1
         return Kp, tau_i, tau_d, b
 
 
-# ===== 4. The seven versions (name -> Version), in the order they were tried =====
+def gain_ranges(version_name, case):
+    """The (low, high) gain ranges a version uses for a case study."""
+    ranges = VERSIONS[version_name].ranges
+    if isinstance(ranges, str):                         # "case": the case file chooses its own ranges
+        if getattr(case, "GAIN_RANGES", None) is None:
+            raise SystemExit(f"{version_name} needs GAIN_RANGES in cases/{case.ID}.py")
+        return case.GAIN_RANGES
+    return ranges
+
+
+# ===== 4. The versions (name -> Version), in the order they were tried =====
+# improved_v5 applies the idea behind improved_v4n2 to any process: the gain ranges are chosen
+# per case study from a fixed-gain check (GAIN_RANGES in the case file). For CS1 they are exactly
+# the ranges of improved_v4n2, so on CS1 improved_v5 and improved_v4n2 are the same version.
 VERSIONS = {
     "paper":         Version(reward_paper,     "small", WIDE,    note="the authors' reward (reproduction)"),
     "improved":      Version(reward_squared,   "small", WIDE,    note="error penalty 1000x larger, cap 5000"),
@@ -78,5 +91,6 @@ VERSIONS = {
                              note="+ setpoint weight b as a 4th slider"),
     "improved_v4":   Version(reward_overshoot, "worst", WIDE,    note="v2 + extra penalty for overshoot"),
     "improved_v4n":  Version(reward_overshoot, "worst", NARROW,  note="v4 + narrower gains (tau_i 0.05-1.0, tau_d 0-0.2)"),
-    "improved_v4n2": Version(reward_overshoot, "worst", NARROW2, note="v4n + tau_i 0.05-0.5 (FINAL)"),
+    "improved_v4n2": Version(reward_overshoot, "worst", NARROW2, note="v4n + tau_i 0.05-0.5 (final for CS1)"),
+    "improved_v5":   Version(reward_overshoot, "worst", "case",  note="v4 + gain ranges chosen per case study"),
 }

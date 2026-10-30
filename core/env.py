@@ -15,7 +15,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 from core.pid import PID
-from core.versions import VERSIONS, PENALTY_CAP
+from core.versions import VERSIONS, PENALTY_CAP, gain_ranges
 
 
 class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
@@ -32,6 +32,7 @@ class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
         super().__init__()
         self.case = case
         self.version = VERSIONS[version]
+        self.ranges = gain_ranges(version, case)       # (low, high) of Kp, tau_i, tau_d
         self.test = test
         self.noise_std = noise_std
         self.hold_steps = hold_steps or case.HOLD_STEPS
@@ -80,7 +81,7 @@ class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
     # ----- one move -----
     def step(self, action):
         """The agent's move: sliders -> gains -> run ACTION_REPEAT samples."""
-        return self.step_gains(*self.version.to_gains(action))
+        return self.step_gains(*self.version.to_gains(action, self.ranges))
 
     def step_gains(self, Kp, tau_i, tau_d, b=1.0):
         """Run ACTION_REPEAT samples with these gains (fixed-gain controllers call this directly)."""

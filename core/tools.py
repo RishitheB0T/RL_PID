@@ -12,7 +12,7 @@ import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 from core.env import RLPIDEnv
-from core.versions import VERSIONS
+from core.versions import VERSIONS, gain_ranges
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the project folder
 
@@ -52,10 +52,11 @@ def load_agent(case, agent_name):
     norm = VecNormalize.load(os.path.join(folder, "vecnormalize.pkl"),    # its input scaling
                              DummyVecEnv([lambda: RLPIDEnv(case, version)]))
     norm.training = False                                                 # freeze the scaling
+    ranges = gain_ranges(version, case)
 
     def controller(obs):
         action = model.predict(norm.normalize_obs(obs), deterministic=True)[0]   # best action, no noise
-        return VERSIONS[version].to_gains(action)
+        return VERSIONS[version].to_gains(action, ranges)
     return controller
 
 

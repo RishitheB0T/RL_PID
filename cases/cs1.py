@@ -22,6 +22,11 @@ TEST_SETPOINT = 1.0       # the step test: START_SETPOINT -> TEST_SETPOINT
 TRAIN_RANGE = (0.0, 2.0)  # training: random setpoints from this range ...
 TRAIN_STEPS = 3           # ... this many per training run (3 x 200 samples)
 
+# ===== Gain ranges for improved_v5: (lowest Kp, tau_i, tau_d), (highest Kp, tau_i, tau_d) =====
+# From the fixed-gain check on the step test: tau_i = 0.5 with Kp 9.5-12.5 beats the authors on
+# all four metrics, tau_i = 1.0 does not. (These are exactly the ranges of improved_v4n2.)
+GAIN_RANGES = (np.array([0.0, 0.05, 0.0]), np.array([20.0, 0.5, 0.2]))
+
 # ===== Reference controllers =====
 CLASSICAL_PI = (3.0, 1.25, 0.0)          # classical PI: Kp, tau_i, tau_d
 AUTHORS = (57.8, 1.70, 0.142, 0.266)     # authors' agent: overshoot %, settling s, ISE, IAE
