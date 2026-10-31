@@ -17,7 +17,14 @@ metrics, for each of its 3 training seeds and on average:
 | Authors' agent | 57.8 % | 1.70 s | 0.142 | 0.266 |
 | **improved_v4n2 (mean of 3 seeds)** | **32.0 %** | **1.37 s** | **0.127** | **0.256** |
 
-Full results, robustness tests and the story of all seven reward versions: [REPORT.md](REPORT.md).
+**Case study 2**, the same process with a 0.4 s dead time, **G(s) = e^(−0.4s)/(s − 1)**, is much harder: every version tuned on CS1 fails. The version **improved_v5**, whose gain ranges come from a fixed-gain check of CS2, is the only one that controls it. On average it beats the best grid-search fixed PID on overshoot, settling and ISE:
+
+| CS2 step test 0 → 1 | Overshoot | Settling (2 %) | ISE | IAE |
+|---|---|---|---|---|
+| Best fixed PID (grid search) | 142.4 % | 9.20 s | 1.980 | 2.587 |
+| **improved_v5 (mean of 3 seeds)** | **103.4 %** | **7.37 s** | **1.795** | 2.763 |
+
+Full results, robustness tests and the story of every reward version: [REPORT.md](REPORT.md).
 
 ## How it works
 
