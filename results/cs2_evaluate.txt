@@ -1,0 +1,32 @@
+Best fixed PID (from grid_search.py): Kp = 2.50, tau_i = 2.00, tau_d = 0.25
+Step test 0.0 -> 1.0 on CS2: G(s) = e^(-0.4s)/(s - 1)
+Controller                       Overshoot % Settling s       ISE       IAE Completed Beats authors on all 4
+Best fixed PID                         142.4       9.20     1.980     2.587       yes                      -
+RL improved_seed0                        0.0      20.00    20.000    20.000       yes                      -
+RL improved_seed1                        0.0      20.00    20.000    20.000       yes                      -
+RL improved_seed2                        0.0      20.00    20.000    20.000       yes                      -
+RL improved_v2_seed0                  4396.8      20.00  5375.781   257.518       yes                      -
+RL improved_v2_seed1                  5102.6      20.00  6149.782   279.843       yes                      -
+RL improved_v2_seed2                  4581.8      20.00 21802.464   427.861       yes                      -
+RL improved_v4_seed0                  4439.9      20.00  6625.233   296.263       yes                      -
+RL improved_v4_seed1                  3763.1      20.00  6016.599   285.286       yes                      -
+RL improved_v4_seed2                  3525.2      20.00  5381.864   262.502       yes                      -
+RL improved_v4n2_seed0                3928.8      20.00  9553.537   373.235       yes                      -
+RL improved_v4n2_seed1                3883.1      20.00  9691.989   375.943       yes                      -
+RL improved_v4n2_seed2                3869.4      20.00  9757.641   376.455       yes                      -
+RL improved_v4n_seed0                 3876.7      20.00  9710.450   376.165       yes                      -
+RL improved_v4n_seed1                 3877.9      20.00  9801.555   376.584       yes                      -
+RL improved_v4n_seed2                 3828.2      20.00  4240.308   230.235       yes                      -
+RL improved_v5_seed0                    87.3       8.30     1.562     2.692       yes                      -
+RL improved_v5_seed1                    89.3       7.40     1.875     3.040       yes                      -
+RL improved_v5_seed2                   133.7       6.40     1.946     2.558       yes                      -
+RL paper_seed0                           0.0      20.00    20.000    20.000       yes                      -
+RL paper_seed1                           0.0      20.00    20.000    20.000       yes                      -
+RL paper_seed2                           0.0      20.00    20.000    20.000       yes                      -
+AVERAGE improved (3 seeds)               0.0      20.00    20.000    20.000         -                      -
+AVERAGE improved_v2 (3 seeds)         4693.7      20.00 11109.342   321.741         -                      -
+AVERAGE improved_v4 (3 seeds)         3909.4      20.00  6007.899   281.350         -                      -
+AVERAGE improved_v4n2 (3 seeds)       3893.8      20.00  9667.722   375.211         -                      -
+AVERAGE improved_v4n (3 seeds)        3860.9      20.00  7917.437   327.662         -                      -
+AVERAGE improved_v5 (3 seeds)          103.4       7.37     1.795     2.763         -                      -
+AVERAGE paper (3 seeds)                  0.0      20.00    20.000    20.000         -                      -

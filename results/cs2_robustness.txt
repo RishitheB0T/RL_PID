@@ -1,0 +1,253 @@
+Robustness test on CS2: G(s) = e^(-0.4s)/(s - 1), step test 0.0 -> 1.0
+
+=== nominal  (sensor noise std 0.0, process changes none, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Best fixed PID                         142.4       9.20     1.980     2.587        yes
+Best fixed 2-DOF PID                    23.3       4.00     0.756     1.091        yes
+RL improved_seed0                        0.0      20.00    20.000    20.000        yes
+RL improved_seed1                        0.0      20.00    20.000    20.000        yes
+RL improved_seed2                        0.0      20.00    20.000    20.000        yes
+RL improved_v2_seed0                  4396.8      20.00  5375.781   257.518        yes
+RL improved_v2_seed1                  5102.6      20.00  6149.782   279.843        yes
+RL improved_v2_seed2                  4581.8      20.00 21802.464   427.861        yes
+RL improved_v3_seed0                  4133.5      20.00  6583.029   290.639        yes
+RL improved_v3_seed1                  3496.0      20.00  5698.627   267.432        yes
+RL improved_v3_seed2                  3916.9      20.00  6487.976   293.541        yes
+RL improved_v4_seed0                  4439.9      20.00  6625.233   296.263        yes
+RL improved_v4_seed1                  3763.1      20.00  6016.599   285.286        yes
+RL improved_v4_seed2                  3525.2      20.00  5381.864   262.502        yes
+RL improved_v4n2_seed0                3928.8      20.00  9553.537   373.235        yes
+RL improved_v4n2_seed1                3883.1      20.00  9691.989   375.943        yes
+RL improved_v4n2_seed2                3869.4      20.00  9757.641   376.455        yes
+RL improved_v4n_seed0                 3876.7      20.00  9710.450   376.165        yes
+RL improved_v4n_seed1                 3877.9      20.00  9801.555   376.584        yes
+RL improved_v4n_seed2                 3828.2      20.00  4240.308   230.235        yes
+RL improved_v5_seed0                    87.3       8.30     1.562     2.692        yes
+RL improved_v5_seed1                    89.3       7.40     1.875     3.040        yes
+RL improved_v5_seed2                   133.7       6.40     1.946     2.558        yes
+RL paper_seed0                           0.0      20.00    20.000    20.000        yes
+RL paper_seed1                           0.0      20.00    20.000    20.000        yes
+RL paper_seed2                           0.0      20.00    20.000    20.000        yes
+
+=== noise 0.01  (sensor noise std 0.01, process changes none, mean of 10 noise seeds) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Best fixed PID                         142.0      19.63     1.993     2.725        yes
+Best fixed 2-DOF PID                    23.9      19.12     0.760     1.253        yes
+RL improved_seed0                        0.0      20.00    20.000    20.000        yes
+RL improved_seed1                        0.0      20.00    20.000    20.000        yes
+RL improved_seed2                        0.0      20.00    20.000    20.000        yes
+RL improved_v2_seed0                  4463.5      20.00  7287.825   303.020        yes
+RL improved_v2_seed1                  4383.1      20.00  6051.684   276.037        yes
+RL improved_v2_seed2                  4515.4      20.00  6394.452   286.199        yes
+RL improved_v3_seed0                  4720.5      20.00  7497.563   306.395        yes
+RL improved_v3_seed1                  4269.2      20.00  6519.726   285.216        yes
+RL improved_v3_seed2                  3417.2      20.00  6126.722   284.755        yes
+RL improved_v4_seed0                  3981.5      19.99  5553.217   262.391        yes
+RL improved_v4_seed1                  3730.2      20.00  5928.159   284.436        yes
+RL improved_v4_seed2                  3615.4      20.00  6331.380   282.463        yes
+RL improved_v4n2_seed0                3904.5      20.00  9660.627   374.593        yes
+RL improved_v4n2_seed1                3876.0      20.00  9696.749   376.058        yes
+RL improved_v4n2_seed2                3877.6      20.00  9731.553   375.814        yes
+RL improved_v4n_seed0                 3876.4      20.00  9703.652   376.039        yes
+RL improved_v4n_seed1                 3876.0      20.00  9781.833   376.144        yes
+RL improved_v4n_seed2                 3870.2      20.00  4751.139   242.816        yes
+RL improved_v5_seed0                    87.6      18.84     1.568     2.797        yes
+RL improved_v5_seed1                    89.7      18.58     1.881     3.120        yes
+RL improved_v5_seed2                   134.0      18.26     1.953     2.673        yes
+RL paper_seed0                           0.0      20.00    20.000    20.000        yes
+RL paper_seed1                           0.0      20.00    20.000    20.000        yes
+RL paper_seed2                           0.0      20.00    20.000    20.000        yes
+
+=== noise 0.05  (sensor noise std 0.05, process changes none, mean of 10 noise seeds) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Best fixed PID                         143.4      20.00     2.164     3.548        yes
+Best fixed 2-DOF PID                    29.1      19.97     0.850     2.021        yes
+RL improved_seed0                        0.0      20.00    20.000    20.000        yes
+RL improved_seed1                        0.0      20.00    20.000    20.000        yes
+RL improved_seed2                        0.0      20.00    20.000    20.000        yes
+RL improved_v2_seed0                  4481.7      20.00  6642.251   288.727        yes
+RL improved_v2_seed1                  4466.1      20.00  5718.319   268.214        yes
+RL improved_v2_seed2                  4343.3      20.00  9363.182   309.997        yes
+RL improved_v3_seed0                  4878.7      20.00  6621.512   288.588        yes
+RL improved_v3_seed1                  4511.0      20.00  6280.568   280.454        yes
+RL improved_v3_seed2                  3512.2      20.00  5707.834   277.308        yes
+RL improved_v4_seed0                  5776.7      20.00  8285.083   300.809        yes
+RL improved_v4_seed1                  3861.6      20.00  5925.498   284.710        yes
+RL improved_v4_seed2                  3529.3      20.00  7542.092   312.966        yes
+RL improved_v4n2_seed0                3897.9      20.00  9668.525   375.239        yes
+RL improved_v4n2_seed1                3891.6      20.00  9610.224   374.717        yes
+RL improved_v4n2_seed2                3881.3      20.00  9644.208   374.667        yes
+RL improved_v4n_seed0                 3859.3      20.00  9616.799   374.691        yes
+RL improved_v4n_seed1                 3885.0      20.00  9707.963   375.345        yes
+RL improved_v4n_seed2                 3914.8      20.00  4482.288   232.123        yes
+RL improved_v5_seed0                    90.2      19.99     1.654     3.328        yes
+RL improved_v5_seed1                    93.1      19.99     1.955     3.558        yes
+RL improved_v5_seed2                   135.2      19.99     2.037     3.215        yes
+RL paper_seed0                           0.0      20.00    20.000    20.000        yes
+RL paper_seed1                           0.0      20.00    20.000    20.000        yes
+RL paper_seed2                           0.0      20.00    20.000    20.000        yes
+
+=== delay 0.3  (sensor noise std 0.0, process changes {'delay': 0.3}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Best fixed PID                          84.2       6.80     1.293     2.103        yes
+Best fixed 2-DOF PID                    13.5       4.30     0.663     1.059        yes
+RL improved_seed0                        0.0      20.00    20.000    20.000        yes
+RL improved_seed1                        0.0      20.00    20.000    20.000        yes
+RL improved_seed2                        0.0      20.00    20.000    20.000        yes
+RL improved_v2_seed0                  3439.7      20.00  5475.887   270.832        yes
+RL improved_v2_seed1                  3896.7      20.00  5735.599   281.458        yes
+RL improved_v2_seed2                  3356.9      20.00  5267.597   265.004        yes
+RL improved_v3_seed0                  3979.7      20.00  6063.163   281.619        yes
+RL improved_v3_seed1                  3611.9      20.00  5177.034   264.665        yes
+RL improved_v3_seed2                  1830.8      20.00  7554.410   310.505        yes
+RL improved_v4_seed0                  2497.0      20.00  6136.602   294.191        yes
+RL improved_v4_seed1                  4281.6      20.00  6686.475   293.313        yes
+RL improved_v4_seed2                  3225.3      20.00  3810.919   221.942        yes
+RL improved_v4n2_seed0                2705.5      20.00  4110.487   245.931        yes
+RL improved_v4n2_seed1                2545.5      20.00  4103.662   244.858        yes
+RL improved_v4n2_seed2                2530.7      20.00  4068.294   243.949        yes
+RL improved_v4n_seed0                 2449.5      20.00  4101.207   246.090        yes
+RL improved_v4n_seed1                 2672.7      20.00  3916.615   236.942        yes
+RL improved_v4n_seed2                 3683.9      20.00  4335.618   247.740        yes
+RL improved_v5_seed0                    64.6       8.30     1.321     2.538        yes
+RL improved_v5_seed1                    77.0      10.10     1.658     2.957        yes
+RL improved_v5_seed2                    73.4       6.50     1.450     2.471        yes
+RL paper_seed0                           0.0      20.00    20.000    20.000        yes
+RL paper_seed1                           0.0      20.00    20.000    20.000        yes
+RL paper_seed2                           0.0      20.00    20.000    20.000        yes
+
+=== delay 0.5  (sensor noise std 0.0, process changes {'delay': 0.5}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Best fixed PID                         224.3      20.00    10.239    11.763        yes
+Best fixed 2-DOF PID                    70.0      20.00     2.218     5.135        yes
+RL improved_seed0                        0.0      20.00    20.000    20.000        yes
+RL improved_seed1                        0.0      20.00    20.000    20.000        yes
+RL improved_seed2                        0.0      20.00    20.000    20.000        yes
+RL improved_v2_seed0                  6506.2      20.00 20505.414   540.213        yes
+RL improved_v2_seed1                  5885.4      20.00 23833.556   584.100        yes
+RL improved_v2_seed2                  6889.1      20.00 26806.833   620.993        yes
+RL improved_v3_seed0                  7224.0      20.00 22512.990   553.045        yes
+RL improved_v3_seed1                  6431.9      20.00 20265.398   534.212        yes
+RL improved_v3_seed2                  4469.5      20.00  9786.660   361.934        yes
+RL improved_v4_seed0                  5705.9      20.00 31149.294   657.736        yes
+RL improved_v4_seed1                  4898.7      20.00 10067.480   373.572        yes
+RL improved_v4_seed2                  6323.5      20.00 19438.600   523.938        yes
+RL improved_v4n2_seed0                5416.7      20.00 19207.999   532.704        yes
+RL improved_v4n2_seed1                5338.2      20.00 19154.472   531.658        yes
+RL improved_v4n2_seed2                5347.0      20.00 19252.314   533.595        yes
+RL improved_v4n_seed0                 5334.2      20.00 19161.571   531.871        yes
+RL improved_v4n_seed1                 5326.9      20.00 19117.093   530.225        yes
+RL improved_v4n_seed2                10042.4       4.10  5886.799   116.676         no
+RL improved_v5_seed0                   142.9      19.70     3.384     5.159        yes
+RL improved_v5_seed1                   150.2       9.80     3.287     4.045        yes
+RL improved_v5_seed2                   201.8      15.90     4.852     5.367        yes
+RL paper_seed0                           0.0      20.00    20.000    20.000        yes
+RL paper_seed1                           0.0      20.00    20.000    20.000        yes
+RL paper_seed2                           0.0      20.00    20.000    20.000        yes
+
+=== K = 0.8  (sensor noise std 0.0, process changes {'K': 0.8}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Best fixed PID                         123.5       8.90     2.558     3.255        yes
+Best fixed 2-DOF PID                    36.2       6.20     0.953     1.665        yes
+RL improved_seed0                        0.0      20.00    20.000    20.000        yes
+RL improved_seed1                        0.0      20.00    20.000    20.000        yes
+RL improved_seed2                        0.0      20.00    20.000    20.000        yes
+RL improved_v2_seed0                  3349.5      20.00  3788.609   220.844        yes
+RL improved_v2_seed1                  4100.2      20.00  4150.775   225.331        yes
+RL improved_v2_seed2                  3645.4      20.00  3557.827   212.770        yes
+RL improved_v3_seed0                  3926.8      20.00  4758.759   243.171        yes
+RL improved_v3_seed1                  4129.0      20.00  4650.910   240.657        yes
+RL improved_v3_seed2                  1761.3      20.00  6271.637   281.793        yes
+RL improved_v4_seed0                  5313.2      20.00  6936.635   282.775        yes
+RL improved_v4_seed1                  1796.7      20.00  6656.834   290.247        yes
+RL improved_v4_seed2                  1788.7      20.00  5765.130   286.906        yes
+RL improved_v4n2_seed0                3112.0      20.00  6694.054   313.552        yes
+RL improved_v4n2_seed1                3009.4      20.00  6779.416   315.538        yes
+RL improved_v4n2_seed2                3038.4      20.00  6737.938   314.990        yes
+RL improved_v4n_seed0                 2996.5      20.00  6781.504   315.616        yes
+RL improved_v4n_seed1                 3106.3      20.00  6719.066   313.541        yes
+RL improved_v4n_seed2                 3082.4      20.00  2081.361   156.472        yes
+RL improved_v5_seed0                   101.1       6.80     2.206     3.118        yes
+RL improved_v5_seed1                   104.5      14.20     2.591     3.872        yes
+RL improved_v5_seed2                   122.2       8.30     2.594     3.224        yes
+RL paper_seed0                           0.0      20.00    20.000    20.000        yes
+RL paper_seed1                           0.0      20.00    20.000    20.000        yes
+RL paper_seed2                           0.0      20.00    20.000    20.000        yes
+
+=== K = 1.2  (sensor noise std 0.0, process changes {'K': 1.2}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Best fixed PID                        2132.1      20.00   836.606    88.551        yes
+Best fixed 2-DOF PID                    34.7      20.00     1.172     3.347        yes
+RL improved_seed0                        0.0      20.00    20.000    20.000        yes
+RL improved_seed1                        0.0      20.00    20.000    20.000        yes
+RL improved_seed2                        0.0      20.00    20.000    20.000        yes
+RL improved_v2_seed0                  7864.5      20.00 54837.683   951.243        yes
+RL improved_v2_seed1                  5521.9      20.00 10910.043   386.287        yes
+RL improved_v2_seed2                  5518.2      20.00  7727.543   307.946        yes
+RL improved_v3_seed0                  7812.2      20.00 14289.494   412.632        yes
+RL improved_v3_seed1                  7040.5      20.00 12402.657   383.249        yes
+RL improved_v3_seed2                  4124.4      20.00 10343.529   373.446        yes
+RL improved_v4_seed0                  5962.6      20.00 17140.587   496.558        yes
+RL improved_v4_seed1                  5079.0      20.00 10242.424   375.444        yes
+RL improved_v4_seed2                  5056.5      20.00  7355.387   299.231        yes
+RL improved_v4n2_seed0                5086.7      20.00 14020.171   453.224        yes
+RL improved_v4n2_seed1                4938.8      20.00 13522.596   445.436        yes
+RL improved_v4n2_seed2                4647.1      20.00 13561.718   447.273        yes
+RL improved_v4n_seed0                 4614.6      20.00 13378.071   443.416        yes
+RL improved_v4n_seed1                 4594.9      20.00 13344.358   442.089        yes
+RL improved_v4n_seed2                10138.5       3.60  6660.436   112.586         no
+RL improved_v5_seed0                    95.9      20.00     2.301     4.833        yes
+RL improved_v5_seed1                   101.4      12.50     2.068     3.341        yes
+RL improved_v5_seed2                   151.0      16.50     3.053     4.461        yes
+RL paper_seed0                           0.0      20.00    20.000    20.000        yes
+RL paper_seed1                           0.0      20.00    20.000    20.000        yes
+RL paper_seed2                           0.0      20.00    20.000    20.000        yes
+
+=== Summary: group averages (RL groups = mean of their seeds) ===
+
+Overshoot %               nominal noise 0.01 noise 0.05  delay 0.3  delay 0.5    K = 0.8    K = 1.2
+paper                         0.0        0.0        0.0        0.0        0.0        0.0        0.0
+improved_v2                4693.7     4454.0     4430.4     3564.4     6426.9     3698.4     6301.5
+improved_v3                3848.8     4135.6     4300.6     3140.8     6041.8     3272.3     6325.7
+improved_v4n2              3893.8     3886.1     3890.3     2593.9     5367.3     3053.2     4890.9
+improved_v5                 103.4      103.8      106.2       71.7      164.9      109.3      116.1
+Best fixed PID              142.4      142.0      143.4       84.2      224.3      123.5     2132.1
+Best fixed 2-DOF PID         23.3       23.9       29.1       13.5       70.0       36.2       34.7
+
+Settling s                nominal noise 0.01 noise 0.05  delay 0.3  delay 0.5    K = 0.8    K = 1.2
+paper                       20.00      20.00      20.00      20.00      20.00      20.00      20.00
+improved_v2                 20.00      20.00      20.00      20.00      20.00      20.00      20.00
+improved_v3                 20.00      20.00      20.00      20.00      20.00      20.00      20.00
+improved_v4n2               20.00      20.00      20.00      20.00      20.00      20.00      20.00
+improved_v5                  7.37      18.56      19.99       8.30      15.13       9.77      16.33
+Best fixed PID               9.20      19.63      20.00       6.80      20.00       8.90      20.00
+Best fixed 2-DOF PID         4.00      19.12      19.97       4.30      20.00       6.20      20.00
+
+ISE                       nominal noise 0.01 noise 0.05  delay 0.3  delay 0.5    K = 0.8    K = 1.2
+paper                      20.000     20.000     20.000     20.000     20.000     20.000     20.000
+improved_v2             11109.342   6577.987   7241.251   5493.028  23715.267   3832.404  24491.756
+improved_v3              6256.544   6714.670   6203.305   6264.869  17521.683   5227.102  12345.227
+improved_v4n2            9667.722   9696.310   9640.985   4094.147  19204.929   6737.136  13701.495
+improved_v5                 1.795      1.801      1.882      1.476      3.841      2.464      2.474
+Best fixed PID              1.980      1.993      2.164      1.293     10.239      2.558    836.606
+Best fixed 2-DOF PID        0.756      0.760      0.850      0.663      2.218      0.953      1.172
+
+IAE                       nominal noise 0.01 noise 0.05  delay 0.3  delay 0.5    K = 0.8    K = 1.2
+paper                      20.000     20.000     20.000     20.000     20.000     20.000     20.000
+improved_v2               321.741    288.419    288.980    272.431    581.768    219.648    548.492
+improved_v3               283.871    292.122    282.117    285.597    483.064    255.207    389.776
+improved_v4n2             375.211    375.488    374.874    244.913    532.652    314.693    448.644
+improved_v5                 2.763      2.863      3.367      2.655      4.857      3.405      4.212
+Best fixed PID              2.587      2.725      3.548      2.103     11.763      3.255     88.551
+Best fixed 2-DOF PID        1.091      1.253      2.021      1.059      5.135      1.665      3.347
+
+Completed runs            nominal noise 0.01 noise 0.05  delay 0.3  delay 0.5    K = 0.8    K = 1.2
+paper                         3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v2                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v3                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v4n2                 3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v5                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
+Best fixed PID                1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Best fixed 2-DOF PID          1/1      10/10      10/10        1/1        1/1        1/1        1/1
+
+Settling 20.00 s = still outside the 2 % band at the end of the test.
