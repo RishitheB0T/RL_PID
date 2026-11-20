@@ -3,7 +3,7 @@ rem build.bat : builds the STM32F407 firmware - no IDE project needed
 rem   .\build.bat          simulated process on the chip (default)
 rem   .\build.bat real     real process through DAC (PA4) and ADC (PA1)
 rem Uses the ARM compiler inside STM32CubeIDE and ST's STM32CubeF4 package (HAL, CMSIS, startup,
-rem linker script). Run export_agent.py first to choose the agent (default: cs1 improved_v4n2_seed0).
+rem linker script). Run export_agent.py first to choose the agent (default in the repository: cs1 improved_v6b_seed2).
 setlocal enabledelayedexpansion
 cd /d "%~dp0"
 

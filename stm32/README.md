@@ -18,6 +18,7 @@ The process is simulated on the chip, or a real process is connected through the
 | `firmware/Inc/stm32f4xx_hal_conf.h` | Which parts of ST's HAL library are used |
 | `host_test/host_main.c`, `verify_on_pc.py` | Compile the same C code on the PC and compare it with Python |
 | `build.bat`, `flash.bat` | Build the firmware and write it to the board, without any IDE project |
+| `simulate.bat` | Run the built firmware on a simulated STM32F4 Discovery (Renode), no board needed |
 
 ## 1. Choose the agent (on the PC)
 
@@ -79,9 +80,9 @@ USB-to-serial adapter to PA2/PA3 and GND. After a reset the board prints:
 
 ```
 === RL-tuned PID on STM32F407 (168 MHz) ===
-agent cs1/improved_v4n2_seed0 - CS1: G(s) = 1/(s - 1)
+agent cs1/improved_v6b_seed2 - CS1: G(s) = 1/(s - 1)
 step test on the chip: overshoot ... settling ... ISE ... IAE ... completed yes
-measured in Python   : overshoot 32.0 %  settling 1.30 s  ISE 0.128  IAE 0.255  completed yes
+measured in Python   : overshoot 15.1 %  settling 0.90 s  ISE 0.106  IAE 0.164  completed yes
 one network decision: ... cycles = ... us
 live control (simulated process), blue button = next setpoint
 t_s,setpoint,output,control_input,Kp,tau_i,tau_d
@@ -110,11 +111,53 @@ Build with `.\build.bat real`. Connections:
 Adapt the scaling (`REAL_Y_AT_0V`, `REAL_Y_AT_3V3` in `main.c`, and the DAC mapping) to your
 circuit and sensor. Keep the signals inside 0 … 3.3 V.
 
+## 6. Run it without a board: simulated STM32 (Renode)
+
+[Renode](https://renode.io) (free, open source, by Antmicro) simulates the STM32F4 Discovery
+board and runs the **same `rlpid.elf`** that goes on the real board. The network, the PID and the
+simulated process run inside the simulated Cortex-M4, and the serial output appears in a window.
+
+1. Download `renode-1.17.0.windows-portable.zip` from https://github.com/renode/renode/releases
+   and unpack it into `rlpid_step1\tools\renode\`. Nothing needs installing.
+2. Build, then simulate:
+
+```
+.\build.bat
+.\simulate.bat            (window with the serial output, live)
+.\simulate.bat log 10     (no window: 10 s of board time, output saved to build\renode_uart.txt)
+```
+
+The step-test line must match the Python numbers, as on the real board. The timing in Renode is
+simulated, so its "network decision" cycle count is not a hardware measurement.
+
+**Status:** `simulate.bat` has not yet been run on this PC, so the first run is its test. If the
+output stops after the first line, the clock setup (`clock_168mhz` in `main.c`) is the likely place:
+it waits for the crystal and the PLL, which the simulated clock controller must report as ready.
+
+## 7. Which simulation setup to use
+
+| Setup | What runs where | What you need | Use it for |
+|---|---|---|---|
+| **A. Renode** (Section 6) | Everything in a simulated STM32 on the PC | Renode (free) | Showing the firmware working with no board; checking a new build quickly |
+| **B. Real board, process on the chip** (default firmware) | Network, PID **and** process on the STM32 | STM32F407G-DISC1, STM32CubeIDE (installed in `C:\ST`), a serial terminal | The main demo: the agent really runs on the microcontroller, with exact real-time timing |
+| **C. Real board, real process** (`build.bat real`) | Network and PID on the STM32; a real circuit | DAC/ADC wiring, e.g. an RC circuit or an op-amp model of the process | A physical experiment |
+| **D. Process on the PC** (hardware-in-the-loop, not built yet) | Network and PID on the STM32; the process in Python on the PC, over UART | `pyserial`, a firmware mode that reads y and sends u | Changing the process on the PC without reflashing; plotting live |
+
+**Recommended:** use A now, without a board. Then use B as the main demo, with the PC dashboard from
+`STM32_LIVE_TASK.md` showing the values and graphs. D is the natural next step if you want to
+change the process live.
+
+Not recommended:
+- QEMU: its STM32F4 support is limited.
+- Proteus: paid, with limited STM32F4 support.
+- STM32CubeIDE: it has no instruction-set simulator, only the debugger for a real board.
+
 ## Using STM32CubeIDE instead of build.bat
 
 1. Create an STM32 project for the **STM32F407VGTx** (or the board STM32F407G-DISC1).
 2. Copy `firmware/Inc/*.h` into `Core/Inc` and `firmware/Src/rl_pid.c` into `Core/Src`.
 3. Call `rlpid_step_test()`, `rlpid_controller_step()` and `rlpid_plant_step()` from the
-   generated `main.c` as in this `main.c`, with a 100 ms loop and UART output.
+   generated `main.c` as in this `main.c`, with a loop of `RLPID_DT_MS` milliseconds (100 ms for
+   CS1/CS2, 1000 ms for CS3) and UART output.
 4. Enable the FPU (the default for this chip) and add `-u _printf_float` to the linker flags if
    floats are printed.
