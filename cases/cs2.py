@@ -6,6 +6,7 @@
 # Same layout as cases/cs1.py; everything else (rewards, PID, training) is unchanged.
 # ---------------------------------------------------------------
 import numpy as np
+from core.tuning_rules import classical_set
 
 NAME = "CS2: G(s) = e^(-0.4s)/(s - 1)"
 
@@ -29,8 +30,15 @@ TRAIN_STEPS = 3
 # The CS1 ranges (tau_i <= 0.5) contain NO stable fixed PID for this process.
 GAIN_RANGES = (np.array([0.0, 0.5, 0.0]), np.array([5.0, 4.0, 0.5]))
 
+# ===== Grid for grid_search.py (41 values each) =====
+# The default grid (tau_i <= 2) put CS2's best PID on its edge (tau_i = 2.0), so tau_i goes to 8 here.
+GRID = dict(Kp=np.linspace(0.0, 5.0, 41), tau_i=np.linspace(0.0, 8.0, 41),
+            tau_d=np.linspace(0.0, 1.0, 41), b=np.linspace(0.0, 1.0, 21))
+
 # ===== Reference controllers =====
-CLASSICAL_PI = None       # no classical tuning entered: the grid-search PID (grid_search.py) is the baseline
+# Published rules for K e^(-theta s)/(T s - 1) (core/tuning_rules.py): K = 1, T = 1,
+# theta = 0.4 + DT/2 = 0.45 (dead time + the usual allowance for the sample-and-hold).
+CLASSICAL = classical_set(K=1.0, T=1.0, theta=0.45)
 AUTHORS = None            # the paper gives no numbers for this process
 
 # ===== Robustness scenarios: (name, sensor-noise std, changed process parameters) =====

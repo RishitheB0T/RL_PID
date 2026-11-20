@@ -12,6 +12,7 @@
 # test trajectory (see REPORT.md).
 # ---------------------------------------------------------------
 import numpy as np
+from core.tuning_rules import classical_set
 
 NAME = "CS3: G(s) = (0.77248s - 0.1727)/(3.1s - 1)  (authors' CS3)"
 
@@ -36,8 +37,15 @@ TRAIN_STEPS = 3
 # ===== Gain ranges for improved_v5 (set from the fixed-gain check, see REPORT.md) =====
 GAIN_RANGES = None
 
+# ===== Grid for grid_search.py (41 values each) =====
+# The best fixed PIDs lie near Kp 40, tau_i 3.5, tau_d 0.1 (outside the default grid Kp <= 20, tau_i <= 2).
+GRID = dict(Kp=np.linspace(0.0, 100.0, 41), tau_i=np.linspace(0.0, 10.0, 41),
+            tau_d=np.linspace(0.0, 1.0, 41), b=np.linspace(0.0, 1.0, 21))
+
 # ===== Reference controllers =====
-CLASSICAL_PI = None
+# Published rules for K e^(-theta s)/(T s - 1) (core/tuning_rules.py): c/(s - a) = K/(T s - 1) with
+# T = 3.1 and K = c*T = 0.0765; theta = DT/2 = 0.5 (the usual allowance for the sample-and-hold).
+CLASSICAL = classical_set(K=(NUM[1] - NUM[0] / DEN[0] * DEN[1]) / DEN[0] * 3.1, T=3.1, theta=0.5)
 AUTHORS = (99.7, 58.0, 11.266, 17.785)   # authors' CS3 agent, scored from their matlab_matrix.mat
 
 # ===== Robustness scenarios: (name, sensor-noise std, changed process parameters) =====

@@ -48,8 +48,9 @@ def test_many(Kp, tau_i, tau_d, b):
 
 
 # ----- the grid: every combination of Kp, tau_i, tau_d (np.meshgrid = 3 nested loops) -----
-GRID = dict(Kp=np.linspace(0.0, 20.0, 41), tau_i=np.linspace(0.0, 2.0, 41),
-            tau_d=np.linspace(0.0, 2.0, 41), b=np.linspace(0.0, 1.0, 21))
+# A case file may set its own GRID (needed when the best gains lie outside this default one).
+GRID = getattr(case, "GRID", None) or dict(Kp=np.linspace(0.0, 20.0, 41), tau_i=np.linspace(0.0, 2.0, 41),
+                                           tau_d=np.linspace(0.0, 2.0, 41), b=np.linspace(0.0, 1.0, 21))
 kp, ti, td = (g.ravel() for g in np.meshgrid(GRID["Kp"], GRID["tau_i"], GRID["tau_d"], indexing="ij"))
 
 best = {}

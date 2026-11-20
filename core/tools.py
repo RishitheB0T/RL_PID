@@ -76,11 +76,11 @@ def load_fixed_gains(case_id):
 
 def reference_controllers(case, include_2dof=False):
     """The fixed-gain controllers the agents are compared with: [(name, controller), ...].
-    The classical PI comes from the case file; the best fixed PID (and, if asked, the best fixed
+    The classical controllers come from the case file (CLASSICAL); the best fixed PID (and, if asked, the best fixed
     2-DOF PID) from grid_search.py - they are simply left out if grid_search.py was not run."""
     refs = []
-    if case.CLASSICAL_PI:
-        refs.append(("Classical PI", fixed(*case.CLASSICAL_PI)))
+    for name, gains in getattr(case, "CLASSICAL", []):
+        refs.append((name, fixed(*gains)))
     best = load_fixed_gains(case.ID)
     if best:
         wanted = [("best_fixed_pid", "Best fixed PID")]

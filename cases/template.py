@@ -33,7 +33,8 @@ GAIN_RANGES = None        # TODO (optional): (np.array([Kp_min, tau_i_min, tau_d
                           # chosen from a fixed-gain check (run grid_search.py first)
 
 # ===== Reference controllers (optional: leave None to skip) =====
-CLASSICAL_PI = None       # TODO (optional): (Kp, tau_i, tau_d) of a classical controller
+CLASSICAL = []            # TODO (optional): [("name", (Kp, tau_i, tau_d)), ...] of classical controllers,
+                          # e.g. core.tuning_rules.classical_set(K, T, theta) for K e^(-theta s)/(T s - 1)
 AUTHORS = None            # TODO (optional): authors' (overshoot %, settling s, ISE, IAE) for this case
 
 # ===== Robustness scenarios: (name, sensor-noise std, changed process parameters) =====

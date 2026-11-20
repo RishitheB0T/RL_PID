@@ -5,6 +5,7 @@
 # cases/cs2.py has exactly the same layout.
 # ---------------------------------------------------------------
 import numpy as np
+from core.tuning_rules import classical_set
 
 NAME = "CS1: G(s) = 1/(s - 1)"
 
@@ -29,6 +30,10 @@ GAIN_RANGES = (np.array([0.0, 0.05, 0.0]), np.array([20.0, 0.5, 0.2]))
 
 # ===== Reference controllers =====
 CLASSICAL_PI = (3.0, 1.25, 0.0)          # classical PI: Kp, tau_i, tau_d
+# Published rules for K e^(-theta s)/(T s - 1) (core/tuning_rules.py): K = 1, T = 1. theta = DT/2 = 0.05
+# (the usual allowance for the sample-and-hold) is below the rules' range 0.1-0.9, so the
+# lowest allowed value theta/T = 0.1 is used.
+CLASSICAL = [("Classical PI", CLASSICAL_PI)] + classical_set(K=1.0, T=1.0, theta=0.1)
 AUTHORS = (57.8, 1.70, 0.142, 0.266)     # authors' agent: overshoot %, settling s, ISE, IAE
 
 # ===== Robustness scenarios: (name, sensor-noise std, changed process parameters) =====
