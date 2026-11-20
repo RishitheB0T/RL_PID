@@ -78,7 +78,7 @@ for i, (name, (env, gains)) in enumerate(results.items()):
 setpoints = next(iter(results.values()))[0].r                 # every step test has the same setpoints
 ax1.step(np.arange(len(setpoints)) * case.DT, setpoints, "--", color="black", where="post", label="Setpoint")
 ax1.set_ylabel("Process output y")
-ax1.set_xlim(0.5, 8)
+ax1.set_xlim(5 * case.DT, getattr(case, "PLOT_TIME", 8.0))   # a case file may set PLOT_TIME (CS3: 60)
 ax1.set_ylim(-0.2, 2.0)
 ax2.set_ylabel("Kp chosen\n(same colours as above)")
 ax2.set_xlabel("Time (s)")

@@ -25,6 +25,7 @@ DT = 1.0                  # sample time
 U_LIMIT = 100.0           # control input (and PID integral) kept inside -100..+100
 Y_LIMIT = 50.0            # the authors' early stopping: |output| > 50 ends a training run
 ACTION_REPEAT = 2
+PLOT_TIME = 60.0          # evaluate.py plots the first 60 time units (CS1/CS2: 8 s)
 
 # ===== Setpoints (as the authors) =====
 WARMUP_STEPS = 10
