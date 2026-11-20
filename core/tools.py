@@ -94,10 +94,11 @@ def reference_controllers(case, include_2dof=False):
 
 # ===== the step test =====
 def run_test(case, controller, version="paper", noise_std=0.0, process_params=None, seed=None,
-             hold_steps=None):
-    """Play the step test once. Returns the finished world and the gains used at every move."""
+             hold_steps=None, levels=None):
+    """Play the step test once (or the setpoints `levels`, see RLPIDEnv).
+    Returns the finished world and the gains used at every move."""
     env = RLPIDEnv(case, version, test=True, noise_std=noise_std, process_params=process_params,
-                   hold_steps=hold_steps)
+                   hold_steps=hold_steps, levels=levels)
     obs, _ = env.reset(seed=seed)          # the seed only matters when there is noise
     gains = []
     while True:

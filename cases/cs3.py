@@ -42,6 +42,11 @@ GAIN_RANGES = None
 GRID = dict(Kp=np.linspace(0.0, 100.0, 41), tau_i=np.linspace(0.0, 10.0, 41),
             tau_d=np.linspace(0.0, 1.0, 41), b=np.linspace(0.0, 1.0, 21))
 
+# ===== Anchor for improved_v6: the best fixed PID (Kp, tau_i, tau_d) from grid_search.py =====
+# Slider 0 = exactly this PID; Kp can go to 1/2..2x, tau_i to 1/3..3x, tau_d by +-ANCHOR_TD_SPAN.
+ANCHOR_PID = (42.5, 3.75, 0.15)
+ANCHOR_TD_SPAN = 0.15
+
 # ===== Reference controllers =====
 # Published rules for K e^(-theta s)/(T s - 1) (core/tuning_rules.py): c/(s - a) = K/(T s - 1) with
 # T = 3.1 and K = c*T = 0.0765; theta = DT/2 = 0.5 (the usual allowance for the sample-and-hold).

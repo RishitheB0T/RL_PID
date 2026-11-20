@@ -28,6 +28,11 @@ TRAIN_STEPS = 3           # ... this many per training run (3 x 200 samples)
 # all four metrics, tau_i = 1.0 does not. (These are exactly the ranges of improved_v4n2.)
 GAIN_RANGES = (np.array([0.0, 0.05, 0.0]), np.array([20.0, 0.5, 0.2]))
 
+# ===== Anchor for improved_v6: the best fixed PID (Kp, tau_i, tau_d) from grid_search.py =====
+# Slider 0 = exactly this PID; Kp can go to 1/2..2x, tau_i to 1/3..3x, tau_d by +-ANCHOR_TD_SPAN.
+ANCHOR_PID = (10.5, 1.15, 0.0)
+ANCHOR_TD_SPAN = 0.05
+
 # ===== Reference controllers =====
 CLASSICAL_PI = (3.0, 1.25, 0.0)          # classical PI: Kp, tau_i, tau_d
 # Published rules for K e^(-theta s)/(T s - 1) (core/tuning_rules.py): K = 1, T = 1. theta = DT/2 = 0.05

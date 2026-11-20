@@ -20,7 +20,7 @@ from core.versions import VERSIONS, PENALTY_CAP, gain_ranges
 
 class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
     def __init__(self, case, version="paper", test=False, noise_std=0.0, process_params=None,
-                 hold_steps=None):
+                 hold_steps=None, levels=None):
         """
         case           : the case-study module, e.g. load_case("cs1")
         version        : reward version name, e.g. "improved_v4n2" (see core/versions.py)
@@ -28,12 +28,15 @@ class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
         noise_std      : sensor noise (standard deviation) on the measured output; 0 = none
         process_params : changed process parameters, e.g. {"K": 1.2} (robustness test)
         hold_steps     : how long each setpoint is held; None = the case's HOLD_STEPS
+        levels         : test only: the setpoints after the warm-up, e.g. [0.8, 1.6] (validation
+                         tests, core/validation.py); None = the step test [TEST_SETPOINT]
         """
         super().__init__()
         self.case = case
         self.version = VERSIONS[version]
         self.ranges = gain_ranges(version, case)       # (low, high) of Kp, tau_i, tau_d
         self.test = test
+        self.levels = levels
         self.noise_std = noise_std
         self.hold_steps = hold_steps or case.HOLD_STEPS
         # "**dict" passes the dictionary's entries as named arguments: Process(K=1.2)
@@ -48,7 +51,7 @@ class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
         """The setpoint of every sample: warm-up at START_SETPOINT, then the held setpoint(s)."""
         c = self.case
         if self.test:
-            levels = [c.TEST_SETPOINT]                                    # one step
+            levels = list(self.levels or [c.TEST_SETPOINT])               # one step (or the given ones)
         else:
             levels = list(self.np_random.uniform(c.TRAIN_RANGE[0], c.TRAIN_RANGE[1], c.TRAIN_STEPS))
         return np.concatenate([np.full(c.WARMUP_STEPS, c.START_SETPOINT)]
@@ -75,6 +78,7 @@ class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
         self.noise = self.np_random.normal(0.0, self.noise_std, len(self.r)) if self.noise_std > 0.0 else None
         self.k = self.case.WARMUP_STEPS - 1    # index of "now": the last warm-up sample
         self.direction = 1.0                   # direction of the last setpoint change (+1 up, -1 down)
+        self.step_size = 0.0                   # size of the last setpoint change (for the 2 % band)
         self.pid.reset()
         return self.observation(), {}
 
@@ -95,9 +99,12 @@ class RLPIDEnv(gym.Env):     # "extends gym.Env" in Java terms
             self.k += 1
             if self.r[self.k] != self.r[self.k - 1]:       # setpoint just changed: remember the direction
                 self.direction = 1.0 if self.r[self.k] > self.r[self.k - 1] else -1.0
+                self.step_size = abs(self.r[self.k] - self.r[self.k - 1])
             e = self.r[self.k] - self.y[self.k]
             ov = max(0.0, (self.y[self.k] - self.r[self.k]) * self.direction)
             total += self.version.reward(e, ov)
+            if self.version.band_bonus and abs(e) <= 0.02 * self.step_size:   # improved_v6 only
+                total += self.version.band_bonus
             if abs(self.y[self.k]) > self.case.Y_LIMIT:    # ran away: stop the run
                 if self.version.crash == "worst":
                     total -= PENALTY_CAP * (len(self.r) - 1 - self.k)   # worst score for every step left

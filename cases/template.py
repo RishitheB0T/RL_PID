@@ -32,6 +32,10 @@ GAIN_RANGES = None        # TODO (optional): (np.array([Kp_min, tau_i_min, tau_d
                           #                   np.array([Kp_max, tau_i_max, tau_d_max]))
                           # chosen from a fixed-gain check (run grid_search.py first)
 
+# ===== Anchor for improved_v6 (optional): the best fixed PID from grid_search.py =====
+ANCHOR_PID = None         # TODO (optional): (Kp, tau_i, tau_d), see cases/cs1.py
+ANCHOR_TD_SPAN = None     # TODO (optional): how far tau_d may move up or down
+
 # ===== Reference controllers (optional: leave None to skip) =====
 CLASSICAL = []            # TODO (optional): [("name", (Kp, tau_i, tau_d)), ...] of classical controllers,
                           # e.g. core.tuning_rules.classical_set(K, T, theta) for K e^(-theta s)/(T s - 1)
