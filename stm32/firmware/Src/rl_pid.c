@@ -57,9 +57,17 @@ rlpid_gains_t rlpid_action_to_gains(const float action[AGENT_N_ACTIONS])
     float a[3];
     int i;
     for (i = 0; i < 3; i++) a[i] = clampf(action[i], -1.0f, 1.0f);
+#if AGENT_GAIN_MAP_ANCHOR
+    /* improved_v6: around the anchor PID (core/versions.py "anchor" ranges) */
+    g.Kp    = ANCHOR_PID[0] * powf(ANCHOR_KP_FACTOR, a[0]);
+    g.tau_i = ANCHOR_PID[1] * powf(ANCHOR_TI_FACTOR, a[1]);
+    g.tau_d = ANCHOR_PID[2] + a[2] * ANCHOR_TD_SPAN;
+    if (g.tau_d < 0.0f) g.tau_d = 0.0f;
+#else
     g.Kp    = GAIN_LOW[0] + (a[0] + 1.0f) / 2.0f * (GAIN_HIGH[0] - GAIN_LOW[0]);
     g.tau_i = GAIN_LOW[1] + (a[1] + 1.0f) / 2.0f * (GAIN_HIGH[1] - GAIN_LOW[1]);
     g.tau_d = GAIN_LOW[2] + (a[2] + 1.0f) / 2.0f * (GAIN_HIGH[2] - GAIN_LOW[2]);
+#endif
 #if AGENT_WEIGHT_B
     g.b = (clampf(action[3], -1.0f, 1.0f) + 1.0f) / 2.0f;   /* setpoint weight (improved_v3) */
 #else

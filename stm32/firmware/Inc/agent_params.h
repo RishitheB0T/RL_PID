@@ -9,6 +9,7 @@
 #define AGENT_N_ACTIONS     3
 #define AGENT_HIDDEN        64
 #define AGENT_WEIGHT_B      0
+#define AGENT_GAIN_MAP_ANCHOR 0   /* 1 = improved_v6 mapping around ANCHOR_PID */
 
 /* case-study settings */
 #define RLPID_DT             0.1f
