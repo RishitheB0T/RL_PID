@@ -39,6 +39,17 @@ What made it work:
 - **Explore close to it.**
 - **Choose the checkpoint on validation tests**, never on the final test.
 
+**Beyond the step test** (REPORT.md Sections 8.7–8.9):
+
+| Analysis | Result for improved_v6b |
+|---|---|
+| 200 random processes (±20 %, sensor noise) | lowest median and 90th-percentile ISE on all three processes; never ran away |
+| Operating envelope (process changes up to ±40 %) | works in about as many cells as the best fixed PID, with a lower ISE in 161 of the 171 cells where both work |
+| Control effort | moves the actuator less than the best fixed PID on all three processes |
+| What it learned | it changes mostly the integral time during the response, which a fixed PID cannot do |
+
+![Gains chosen by the agent during the step test](results/gain_schedule.png)
+
 [REPORT.md](REPORT.md) covers the rest:
 - robustness to noise and model mismatch;
 - a load-disturbance test and new setpoint changes, including where the agents are weaker;
@@ -77,8 +88,8 @@ stm32/        the controller in C and the firmware for the STM32F4 Discovery (se
 tests/        automatic checks (measured results, processes, tuning rules, v6, C code = Python)
 runs/         the trained agents: runs/<case>/<version>_seed<N>/
 results/      every table and plot the scripts produce
-train.py  grid_search.py  evaluate.py  targets.py  robustness.py  extra_tests.py
-plot_three.py  plot_all_agents.py  live_demo.py
+train.py  grid_search.py  evaluate.py  targets.py  robustness.py  extra_tests.py  stress_test.py
+explain_agent.py  plot_three.py  plot_training.py  plot_all_agents.py  live_demo.py
 ```
 
 ## Setup (Windows, Python 3.14)
@@ -101,6 +112,9 @@ python -m venv .venv
 .\run robustness.py cs1                           # sensor noise and model mismatch
 .\run extra_tests.py cs1                          # load disturbance and new setpoint changes
 .\run plot_three.py                               # the three processes in one figure
+.\run stress_test.py                              # operating envelope + 200-process Monte Carlo
+.\run explain_agent.py                            # the gains the agent chooses + control effort
+.\run plot_training.py                            # validation score during training
 .\run plot_all_agents.py cs1                      # all step responses in one graph
 .\run live_demo.py cs1 improved_v6b_seed2         # watch an agent live (keys: Up/Down, d, space, n)
 .\run live_demo.py cs1 improved_v6b_seed2 --gif demo.gif

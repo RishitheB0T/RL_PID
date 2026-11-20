@@ -456,6 +456,75 @@ What this shows, honestly:
 Training with disturbances and adding a down-step to the validation tests are the obvious next
 improvements.
 
+### 8.7 Training curves (`plot_training.py`)
+
+![Validation score during training](results/training_curves.png)
+
+The validation score is 1 for the anchor PID the agent starts from; below 1 is better.
+- **Round 1 (improved_v6, exploration std 1):** the agents stay above 1 almost the whole time, worse than where they started.
+- **Round 2 (improved_v6b, std 0.2):** the agents improve by 20–30 % within about 0.4 million steps.
+- **Late training:** they get worse again (most on CS2). This is why the checkpoint is chosen on the validation tests and not taken from the end of training.
+
+### 8.8 What the agent does (`explain_agent.py`)
+
+![Gains chosen by the agent during the step test](results/gain_schedule.png)
+
+Bottom row: the agent's gains divided by the fixed PID it started from.
+- **What it changes:** mostly the integral time τi. Kp stays within about 0.75–1.1 of the fixed PID's value.
+- **CS1:** τi is about twice the fixed value (a weak integral) while the output jumps, then about a third (a strong integral) as it approaches the setpoint.
+- **CS2:** τi is high at first and settles at about 1.4×.
+- **CS3:** τi swings between ⅓× and 3× around the jump, and Kp is about 15 % lower.
+
+A fixed PID cannot do this. It is the reason the agent beats the best fixed PID tuned on this very test.
+
+**Control effort** (`results/control_effort.txt`): total variation of u, Σ|u[k] − u[k−1]|, and peak |u|.
+RL is the mean of 5 seeds; the noise column is the mean of 10 noise seeds.
+
+| | RL improved_v6b | Best fixed PID | Best published rule |
+|---|---|---|---|
+| CS1: TV nominal / noise 0.01 / peak \|u\| | 23.9 / 67.8 / 10.6 | 24.6 / 71.9 / 11.4 | **20.6 / 52.1 / 9.2** |
+| CS2 | **17.1 / 49.5 / 3.4** | 27.2 / 66.8 / 4.0 | 34.1 / 60.1 / 5.6 |
+| CS3 | **135.4 / 395.4 / 44.5** | 190.7 / 554.9 / 53.8 | 508.3 / 1204.8 / 88.1 |
+
+The agent's better tracking does not cost actuator wear:
+- **Against the fixed PID:** it moves the actuator less, on all three processes.
+- **Against the published rules:** it moves less on CS2 and CS3. The exception is CS1, where the Kaya PI moves less, with worse tracking.
+
+### 8.9 Stress test (`stress_test.py`)
+
+**Operating envelope:** a 9 × 9 grid of process changes, step test in every cell.
+- CS1 and CS3: unstable pole × 0.6–1.4 and gain × 0.6–1.4.
+- CS2: dead time 0.2–0.6 s and gain × 0.6–1.4.
+- A cell counts if the run completes and settles inside the 2 % band.
+
+![Operating envelope](results/operating_envelope.png)
+
+| Cells that work (of 81) | RL improved_v6b, per seed (all 5 seeds at once) | Best fixed PID | Best published rule |
+|---|---|---|---|
+| CS1 | 81 (81) | 81 | 81 |
+| CS2 | 42.2 (32) | 39 | 42 |
+| CS3 | 71.2 (63) | 72 | 54 |
+
+- **How large the envelope is:** per seed, about the same as the best fixed PID's. On CS3 it is clearly larger than the published rule's.
+- **How good it is inside the envelope:** among the cells where both controllers work, the agent's ISE is lower:
+  - than the best fixed PID's in 81 of 81 (CS1), 26 of 27 (CS2) and 54 of 63 (CS3);
+  - than the best published rule's in 64 of 81, 18 of 28 and 36 of 54.
+- **The "all 5 seeds" count is lower:** a few seeds fail at the edges of the grid, where none of them was trained.
+
+**Monte Carlo:** 200 random processes, every parameter changed by up to ±20 % (CS2 dead time 0.3, 0.4 or 0.5 s), with sensor noise 0.01.
+
+![Monte Carlo](results/monte_carlo.png)
+
+| ISE: median / 90th percentile (ran away, never settled) | RL improved_v6b | Best fixed PID | Best published rule |
+|---|---|---|---|
+| CS1 | **0.118 / 0.126** (0, 17) | 0.128 / 0.135 (0, 18) | 0.132 / 0.147 (0, 8) |
+| CS2 | **1.626 / 17.3** (0, 56) | 3.098 / 411.4 (0, 96) | 8.649 / 12328 (1, 111) |
+| CS3 | **1.287 / 1.532** (0, 36) | 2.091 / 2.418 (0, 63) | 4.000 / 269.0 (0, 114) |
+
+- **ISE:** under realistic uncertainty the agent has the lowest median and the lowest 90th-percentile ISE on all three processes.
+- **Failures:** it never ran away, and it had the fewest runs that never settled on CS2 and CS3.
+- **"Never settled" with noise:** with noise of 0.01 against a 2 % band (0.02), many runs of every controller never stay inside the band. That count is a stricter measure than the ISE.
+
 ---
 
 ## 9. STM32F4 deployment (ARM Cortex-M4)
@@ -507,7 +576,10 @@ best test score). The C code supports both gain mappings (linear ranges and the 
    - Closing the crash loophole (worst-case crash penalty).
    - Penalising overshoot.
    - Most important, limiting the integral time τi to 0.05–0.5 s. The improved_v2 and improved_v4n agents pushed τi to the top of their allowed range (2.0 and about 1.0). A fixed-gain check showed that with τi = 1.0 the response never settles within 1.70 s, while τi = 0.5 does.
-5. **Robustness:**
+5. **Robustness and practicality (Sections 8.7–8.9):**
+   - In 200 random processes (±20 %, with noise), improved_v6b has the lowest median and 90th-percentile ISE on all three processes, and never ran away.
+   - It uses less control effort than the best fixed PID on all three processes.
+   - Its operating envelope is about as large as the best fixed PID's, with a lower ISE in almost every cell.
    - improved_v4n2 keeps its fast settling under ±20 % model mismatch, and is ahead of the paper group in most scenarios.
    - improved_v6b has the lowest ISE in 6 of 7 CS1 and 7 of 7 CS3 robustness scenarios. On CS2 it is weaker with a 0.5 s dead time and with K = 1.2 (Section 8.5).
 6. **CS2 (dead time): the gain ranges have to fit the process.**
@@ -545,6 +617,9 @@ best test score). The C code supports both gain mappings (linear ranges and the 
 .\run robustness.py cs1                   (and cs2, cs3)
 .\run extra_tests.py cs1                  (load disturbance, new setpoints; and cs2, cs3)
 .\run plot_three.py                       (results/three_processes.png)
+.\run stress_test.py                      (operating envelope + Monte Carlo, ~3 min)
+.\run explain_agent.py                    (gains over time + control effort)
+.\run plot_training.py                    (validation score during training)
 .\run train.py cs3 improved_v6b 0 1000000 --select     (one new training run, about 35-70 min)
 .\run stm32\verify_on_pc.py cs1 improved_v6b_seed2
 stm32\build.bat

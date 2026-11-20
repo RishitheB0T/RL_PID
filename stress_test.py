@@ -93,6 +93,13 @@ for cid in CASES:
         show(f"  envelope  {name:22s} works in {works.sum():2d} of 81 cells (every seed); "
              f"average per seed {per_seed:.1f} of 81")
 
+    rl_ise, rl_ok = envelope[(cid, "RL improved_v6b")][:2]
+    for other in ("Best fixed PID", "Best published rule"):
+        o_ise, o_ok = envelope[(cid, other)][:2]
+        both = rl_ok & o_ok
+        show(f"  envelope  cells where both work: {both.sum()}; RL has the lower ISE in "
+             f"{np.sum(rl_ise[both] < o_ise[both])} of them (vs {other})")
+
     # ----- 2. Monte Carlo -----
     rng = np.random.default_rng(0)
     draws = [random_params(cid, rng) for _ in range(N_DRAWS)]
