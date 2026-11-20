@@ -2,6 +2,10 @@ Best fixed PID (from grid_search.py): Kp = 10.50, tau_i = 1.15, tau_d = 0.00
 Step test 0.0 -> 1.0 on CS1: G(s) = 1/(s - 1)
 Controller                       Overshoot % Settling s       ISE       IAE Completed Beats authors on all 4
 Classical PI                            48.8       4.00     0.401     0.914       yes                     no
+Kaya 2017 PI (ISTE)                     25.9       1.80     0.131     0.293       yes                     no
+Kaya 2017 PI (IST2E)                    30.6       1.40     0.137     0.288       yes                     no
+Kaya 2017 PID (ISTE)                   590.9      20.00   468.285    95.580       yes                     no
+Kaya 2017 PID (IST2E)                  568.9      20.00   470.816    95.993       yes                     no
 Best fixed PID                          19.9       2.50     0.122     0.310       yes                     no
 RL improved_seed0                       33.9       2.80     0.120     0.296       yes                     no
 RL improved_seed1                       13.7       3.10     0.109     0.284       yes                     no
@@ -16,6 +20,19 @@ RL improved_v4n2_seed2                  32.5       1.40     0.126     0.252     
 RL improved_v4n_seed0                   21.4       2.20     0.121     0.292       yes                     no
 RL improved_v4n_seed1                   24.9       2.20     0.133     0.323       yes                     no
 RL improved_v4n_seed2                   19.1       2.00     0.114     0.253       yes                     no
+RL improved_v6_seed0                    28.2       1.20     0.151     0.319       yes                     no
+RL improved_v6_seed1                    34.9       1.20     0.126     0.231       yes                    yes
+RL improved_v6_seed2                    25.0       1.10     0.129     0.250       yes                    yes
+RL improved_v6b_seed0                   19.8       1.50     0.116     0.233       yes                    yes
+RL improved_v6b_seed1                   17.4       1.60     0.111     0.220       yes                    yes
+RL improved_v6b_seed2                   15.1       0.90     0.106     0.164       yes                    yes
+RL improved_v6b_seed3                   19.1       0.90     0.110     0.184       yes                    yes
+RL improved_v6b_seed4                   25.6       1.10     0.119     0.218       yes                    yes
+RL improved_v6c_seed0                   20.0       1.20     0.114     0.210       yes                    yes
+RL improved_v6c_seed1                   27.3       1.10     0.120     0.215       yes                    yes
+RL improved_v6c_seed2                   19.1       1.30     0.113     0.218       yes                    yes
+RL improved_v6c_seed3                   20.0       1.00     0.114     0.202       yes                    yes
+RL improved_v6c_seed4                   25.8       1.10     0.124     0.234       yes                    yes
 RL paper_seed0                          67.9       2.00     0.162     0.296       yes                     no
 RL paper_seed1                          46.6       2.30     0.129     0.279       yes                     no
 RL paper_seed2                          51.6       2.40     0.136     0.298       yes                     no
@@ -24,4 +41,7 @@ AVERAGE improved (3 seeds)            3361.7       2.23   825.586    12.170     
 AVERAGE improved_v2 (3 seeds)           13.7       3.43     0.113     0.318         -                     no
 AVERAGE improved_v4n2 (3 seeds)         32.0       1.37     0.127     0.256         -                    yes
 AVERAGE improved_v4n (3 seeds)          21.8       2.13     0.123     0.289         -                     no
+AVERAGE improved_v6 (3 seeds)           29.4       1.17     0.135     0.267         -                     no
+AVERAGE improved_v6b (5 seeds)          19.4       1.20     0.112     0.204         -                    yes
+AVERAGE improved_v6c (5 seeds)          22.4       1.14     0.117     0.216         -                    yes
 AVERAGE paper (3 seeds)                 55.4       2.23     0.143     0.291         -                     no

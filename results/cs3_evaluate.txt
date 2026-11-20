@@ -1,0 +1,18 @@
+Best fixed PID (from grid_search.py): Kp = 42.50, tau_i = 3.75, tau_d = 0.15
+Step test 0.0 -> 1.0 on CS3: G(s) = (0.77248s - 0.1727)/(3.1s - 1)  (authors' CS3)
+Controller                       Overshoot % Settling s       ISE       IAE Completed Beats authors on all 4
+Kaya 2017 PI (ISTE)                    146.6      18.00     4.342     5.671       yes                     no
+Kaya 2017 PI (IST2E)                   134.4      10.00     3.210     3.609       yes                     no
+Kaya 2017 PID (ISTE)                   257.2     200.00   285.057   208.038       yes                     no
+Kaya 2017 PID (IST2E)                  271.8     200.00   289.713   205.329       yes                     no
+Best fixed PID                          56.7       9.00     1.844     3.179       yes                    yes
+RL improved_v6_seed0                    63.8      10.00     1.434     2.082       yes                    yes
+RL improved_v6_seed1                    41.2      13.00     1.331     2.498       yes                    yes
+RL improved_v6b_seed0                   36.4       6.00     1.196     1.742       yes                    yes
+RL improved_v6b_seed1                   32.0       8.00     1.188     1.759       yes                    yes
+RL improved_v6b_seed2                   32.1       5.00     1.136     1.599       yes                    yes
+RL improved_v6b_seed3                   25.1       7.00     1.122     1.721       yes                    yes
+RL improved_v6b_seed4                   39.8       5.00     1.228     1.815       yes                    yes
+Authors' agent (their files)            99.7      58.00    11.266    17.785         -                      -
+AVERAGE improved_v6 (2 seeds)           52.5      11.50     1.383     2.290         -                    yes
+AVERAGE improved_v6b (5 seeds)          33.1       6.20     1.174     1.727         -                    yes
