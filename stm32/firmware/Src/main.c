@@ -4,8 +4,10 @@
  *    numbers Python measured (from agent_params.h).
  * 2. Live control at real time (one sample every RLPID_DT seconds). The trained network picks
  *    the PID gains every RLPID_ACTION_REPEAT samples; the PID controls the process.
- *    The process is simulated on the chip (RLPID_USE_REAL_PLANT = 0) or a real one is connected
- *    through the DAC and ADC (RLPID_USE_REAL_PLANT = 1, see README.md).
+ *    The process is simulated on the chip (default), or a real one is connected through the DAC
+ *    and ADC (RLPID_USE_REAL_PLANT = 1, build.bat real), or the process runs on the PC and the
+ *    board is only the controller (RLPID_USE_PC_PLANT = 1, build.bat pc; protocol in hil.h,
+ *    PC side stm32/pc_plant.py). See README.md.
  *
  * Board connections:
  *   USART2  PA2 = TX, PA3 = RX, 115200 baud  (the ST-LINK virtual COM port on the DISC1 board)
@@ -19,12 +21,17 @@
  */
 #include "stm32f4xx_hal.h"
 #include "rl_pid.h"
+#include "hil.h"
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifndef RLPID_USE_REAL_PLANT
 #define RLPID_USE_REAL_PLANT 0
+#endif
+#ifndef RLPID_USE_PC_PLANT
+#define RLPID_USE_PC_PLANT 0
 #endif
 
 /* Real process only: how volts map to the controller's numbers (adapt to your circuit). */
@@ -168,23 +175,31 @@ static void real_plant_write(float u)            /* control input -U_LIMIT..+U_L
 }
 #endif
 
+#if RLPID_USE_PC_PLANT
+static int uart_read_line(char *buf, int size)    /* waits for one line from the PC ('\r' ignored) */
+{
+    int n = 0;
+    uint8_t ch;
+    for (;;) {
+        if (HAL_UART_Receive(&huart2, &ch, 1, HAL_MAX_DELAY) != HAL_OK) continue;
+        if (ch == '\n') { buf[n] = '\0'; return n; }
+        if (ch != '\r' && n < size - 1) buf[n++] = (char)ch;
+    }
+}
+
+static uint32_t dwt_cycles(void) { return DWT->CYCCNT; }
+#endif
+
 /* ===== interrupts ===== */
 void SysTick_Handler(void) { HAL_IncTick(); }    /* 1 ms tick for HAL_GetTick / HAL_Delay */
 
 /* ===== the program ===== */
 int main(void)
 {
-    static const float setpoints[] = {RLPID_TEST_SETPOINT,
-                                      RLPID_START_SETPOINT + 0.5f * (RLPID_TEST_SETPOINT - RLPID_START_SETPOINT),
-                                      RLPID_START_SETPOINT + 1.5f * (RLPID_TEST_SETPOINT - RLPID_START_SETPOINT),
-                                      RLPID_START_SETPOINT};
-    const int n_setpoints = (int)(sizeof setpoints / sizeof setpoints[0]);
     rlpid_controller_t ctrl;
-    rlpid_plant_t plant;
     rlpid_metrics_t m;
-    uint32_t t0, cycles, next_tick;
-    int which = 0, button_was = 0;
-    float r, y, u, obs[3] = {0}, action[AGENT_N_ACTIONS];
+    uint32_t t0, cycles;
+    float obs[3] = {0}, action[AGENT_N_ACTIONS];
 
     HAL_Init();
     gpio_init();
@@ -213,6 +228,37 @@ int main(void)
     cycles = DWT->CYCCNT - t0;
     say("one network decision: %lu cycles = %.1f us\r\n", cycles,
         (double)cycles * 1e6 / (double)HAL_RCC_GetSysClockFreq());
+
+#if RLPID_USE_PC_PLANT
+    /* 2. hardware-in-the-loop: the process runs on the PC (stm32/pc_plant.py); the board only
+     *    answers each "S <r> <y>" with the control input. The PC keeps the time. */
+    say("hardware-in-the-loop: the process runs on the PC (stm32\\pc_plant.py)\r\nREADY\r\n");
+    rlpid_controller_reset(&ctrl, 0.0f);
+    for (uint32_t k = 0;; k++) {
+        static char line[96], reply[160];
+        uart_read_line(line, sizeof line);
+        if (line[0] == '\0') continue;
+        hil_handle_line(line, reply, sizeof reply, &ctrl, dwt_cycles);
+        say("%s\r\n", reply);
+        if (line[0] == 'S') {                     /* LEDs: running, in the 2 % band, ran away */
+            char *end;
+            float r = strtof(line + 1, &end);
+            float y = strtof(end, NULL);
+            led(GPIO_PIN_12, (int)(k & 1u));
+            led(GPIO_PIN_15, fabsf(r - y) <= 0.02f * fabsf(RLPID_TEST_SETPOINT - RLPID_START_SETPOINT));
+            led(GPIO_PIN_14, fabsf(y) > RLPID_Y_LIMIT);
+        }
+    }
+#else
+    static const float setpoints[] = {RLPID_TEST_SETPOINT,
+                                      RLPID_START_SETPOINT + 0.5f * (RLPID_TEST_SETPOINT - RLPID_START_SETPOINT),
+                                      RLPID_START_SETPOINT + 1.5f * (RLPID_TEST_SETPOINT - RLPID_START_SETPOINT),
+                                      RLPID_START_SETPOINT};
+    const int n_setpoints = (int)(sizeof setpoints / sizeof setpoints[0]);
+    rlpid_plant_t plant;
+    uint32_t next_tick;
+    int which = 0, button_was = 0;
+    float r, y, u;
 
     /* 2. live control, one sample every RLPID_DT_MS milliseconds */
     say("live control (%s process), blue button = next setpoint\r\n",
@@ -250,4 +296,5 @@ int main(void)
         say("%.1f,%.3f,%.4f,%.3f,%.3f,%.3f,%.3f\r\n", (double)k * RLPID_DT, r, y, u,
             ctrl.gains.Kp, ctrl.gains.tau_i, ctrl.gains.tau_d);
     }
+#endif
 }
