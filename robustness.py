@@ -15,7 +15,9 @@ from core.tools import (Printer, completed, find_agents, load_agent, reference_c
 
 NOISE_SEEDS = list(range(10))     # 0, 1, ..., 9
 SUMMARY_GROUPS = ["paper", "improved_v2", "improved_v3", "improved_v4n2", "improved_v5",
-                  "Classical PI", "Best fixed PID", "Best fixed 2-DOF PID"]     # groups without agents are skipped
+                  "improved_v6", "improved_v6b",
+                  "Classical PI", "Kaya 2017 PI (ISTE)", "Kaya 2017 PI (IST2E)", "Kaya 2017 PID (ISTE)",
+                  "Kaya 2017 PID (IST2E)", "Best fixed PID", "Best fixed 2-DOF PID"]   # empty groups are skipped
 
 case = load_case(sys.argv[1] if len(sys.argv) > 1 else "cs1")
 show = Printer()
