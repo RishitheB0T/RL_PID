@@ -5,7 +5,9 @@ Target board: **STM32F407G-DISC1** (STM32F4 Discovery, STM32F407VG, Cortex-M4F a
 
 The trained agent runs **on the microcontroller itself**: every 0.2 s the neural network
 (3 → 64 → 64 → 3, tanh) chooses the PID gains, and every 0.1 s the PID computes the control input.
-The process is simulated on the chip, or a real process is connected through the DAC and ADC.
+The process is simulated on the chip, or a real process is connected through the DAC and ADC, or
+(the edge-controller setup, Section 6) the process runs on the PC and the board only receives the
+measured output and sends back the control input.
 
 ## Files
 
@@ -19,6 +21,9 @@ The process is simulated on the chip, or a real process is connected through the
 | `host_test/host_main.c`, `verify_on_pc.py` | Compile the same C code on the PC and compare it with Python |
 | `build.bat`, `flash.bat` | Build the firmware and write it to the board, without any IDE project |
 | `simulate.bat` | Run the built firmware on a simulated STM32F4 Discovery (Renode), no board needed |
+| `firmware/Inc/hil.h`, `firmware/Src/hil.c` | Hardware in the loop: the text protocol through which the PC sends (setpoint, output) and the board answers with the control input |
+| `pc_plant.py` | The process on the PC; the board is the controller (step test vs Python, live run with plot) |
+| `host_test/host_hil.c` | The board's controller + protocol compiled on the PC: `pc_plant.py --sim` works without a board |
 
 ## 1. Choose the agent (on the PC)
 
@@ -60,6 +65,7 @@ Requirements, both free from st.com:
 cd stm32
 .\build.bat            (process simulated on the chip)
 .\build.bat real       (real process through the DAC and ADC)
+.\build.bat pc         (the board is only the controller; the process runs on the PC, Section 6)
 ```
 
 Output: `build\firmware\rlpid.elf` and `rlpid.bin`. With the improved_v6b agent the build uses
@@ -111,7 +117,63 @@ Build with `.\build.bat real`. Connections:
 Adapt the scaling (`REAL_Y_AT_0V`, `REAL_Y_AT_3V3` in `main.c`, and the DAC mapping) to your
 circuit and sensor. Keep the signals inside 0 … 3.3 V.
 
-## 6. Run it without a board: simulated STM32 (Renode)
+## 6. The STM32 as the controller of a process on the PC (hardware in the loop)
+
+Here the board is **only the controller**, like an edge controller next to a plant. It holds the
+trained RL agent and the PID, and it never sees the process: every sample it gets the setpoint r
+and the measured output y and answers with the control input u. The process runs on the PC in
+`pc_plant.py`, with the same model the agent was trained on (`cases/csN.py`).
+
+```
+ PC (pc_plant.py)                                   STM32F407 (build.bat pc)
+ ┌──────────────────────────────┐   "S r y"   ┌──────────────────────────────────┐
+ │ process model  y[k+1] = f(u) │ ──────────► │ RL network -> Kp, tau_i, tau_d     │
+ │ setpoints, disturbances,     │             │ PID -> u                           │
+ │ noise, live plot, CSV log    │ ◄────────── │ (every ACTION_REPEAT samples the  │
+ └──────────────────────────────┘ "U u Kp ..." │  network chooses new gains)       │
+                                              └──────────────────────────────────┘
+```
+
+**Protocol** (`firmware/Inc/hil.h`), one text line per message at 115200 baud. You can also try it
+by hand in a serial terminal.
+
+| PC sends | Board answers |
+|---|---|
+| `I` | `I <agent> <dt> <u_limit> <y_limit> <action_repeat>` |
+| `Z <y0>` | `Z OK` (reset: empty integral, previous output y0) |
+| `S <r> <y>` | `U <u> <Kp> <tau_i> <tau_d> <cycles>` (cycles = CPU cycles of this controller step) |
+
+**Run it:**
+
+```
+.\run stm32\export_agent.py cs1 improved_v6b_seed2     (choose the agent; CS2/CS3: improved_v6b_seed3)
+stm32\build.bat pc
+stm32\flash.bat
+.\run stm32\pc_plant.py test                            step test 0 -> 1 through the board, compared with Python
+.\run stm32\pc_plant.py live                            real time, setpoints 1 -> 0.5 -> 1.5 -> 1, live plot
+.\run stm32\pc_plant.py live --bump 12:0.3              ... plus a sudden disturbance at t = 12 s
+.\run stm32\pc_plant.py live --param K=1.2 --noise 0.01 ... a different process and sensor noise
+```
+
+- `pc_plant.py` reads the agent's name from the board and picks the matching process model.
+- The live run is saved to `stm32/logs/hil_<date>_<time>.csv` and `.png`.
+- The PC keeps the time (one sample every dt). The board answers within its controller time, which `test` reports in CPU cycles.
+- The ST-LINK COM port is found automatically (USB vendor 0x0483). The script never picks another port, for example the Bluetooth ports on this PC; `--port COMx` sets it by hand.
+
+**Without a board:** `--sim` compiles the board's controller code (`rl_pid.c` + `hil.c`) on the PC
+and talks to it through the same protocol (`host_test/host_hil.c`). Measured with `--sim`, the step
+test through the protocol gives exactly the Python numbers for all three processes:
+
+| Agent | Through the protocol (C controller) | Python |
+|---|---|---|
+| CS1 improved_v6b seed 2 | 15.1 % / 0.90 s / 0.106 / 0.164 | 15.1 % / 0.90 s / 0.106 / 0.164 |
+| CS2 improved_v6b seed 3 | 83.2 % / 5.70 s / 1.214 / 1.960 | 83.2 % / 5.70 s / 1.214 / 1.960 |
+| CS3 improved_v6b seed 3 | 25.1 % / 7.00 / 1.122 / 1.721 | 25.1 % / 7.00 / 1.122 / 1.721 |
+
+The firmware in `pc` mode builds with no warnings: 51,180 bytes of code, 3,920 bytes of RAM.
+**Not yet run with the real board** (none was connected); the first `pc_plant.py test` on the board is that check.
+
+## 7. Run it without a board: simulated STM32 (Renode)
 
 [Renode](https://renode.io) (free, open source, by Antmicro) simulates the STM32F4 Discovery
 board and runs the **same `rlpid.elf`** that goes on the real board. The network, the PID and the
@@ -134,18 +196,19 @@ simulated, so its "network decision" cycle count is not a hardware measurement.
 output stops after the first line, the clock setup (`clock_168mhz` in `main.c`) is the likely place:
 it waits for the crystal and the PLL, which the simulated clock controller must report as ready.
 
-## 7. Which simulation setup to use
+## 8. Which setup to use
 
 | Setup | What runs where | What you need | Use it for |
 |---|---|---|---|
-| **A. Renode** (Section 6) | Everything in a simulated STM32 on the PC | Renode (free) | Showing the firmware working with no board; checking a new build quickly |
-| **B. Real board, process on the chip** (default firmware) | Network, PID **and** process on the STM32 | STM32F407G-DISC1, STM32CubeIDE (installed in `C:\ST`), a serial terminal | The main demo: the agent really runs on the microcontroller, with exact real-time timing |
-| **C. Real board, real process** (`build.bat real`) | Network and PID on the STM32; a real circuit | DAC/ADC wiring, e.g. an RC circuit or an op-amp model of the process | A physical experiment |
-| **D. Process on the PC** (hardware-in-the-loop, not built yet) | Network and PID on the STM32; the process in Python on the PC, over UART | `pyserial`, a firmware mode that reads y and sends u | Changing the process on the PC without reflashing; plotting live |
+| **A. Process on the PC** (Section 6, `build.bat pc`) | Network and PID on the STM32 (the edge controller); the process in Python on the PC | the board, `pyserial` (in requirements.txt) | **The main demo:** the STM32 controls a process it cannot see, only through r, y and u, as with a real plant. Processes, noise and disturbances change on the PC without reflashing |
+| **B. Real board, process on the chip** (default firmware) | Network, PID **and** process on the STM32 | the board and a serial terminal | Exact real-time timing with no PC in the loop |
+| **C. Real board, real process** (`build.bat real`) | Network and PID on the STM32; a real circuit on the DAC/ADC | wiring, e.g. an op-amp model of the process | A physical experiment |
+| **D. Renode** (Section 7) | Everything in a simulated STM32 | Renode (free) | Checking a build with no board |
 
-**Recommended:** use A now, without a board. Then use B as the main demo, with the PC dashboard from
-`STM32_LIVE_TASK.md` showing the values and graphs. D is the natural next step if you want to
-change the process live.
+Without a board, `pc_plant.py --sim` shows setup A with the board's controller code compiled on the PC.
+
+**Recommended:** use A as the main demo. Its live plot shows the setpoint, output, control input and
+the gains the board chooses.
 
 Not recommended:
 - QEMU: its STM32F4 support is limited.

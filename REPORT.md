@@ -546,6 +546,13 @@ The trained controller was ported to C for the **STM32F407G-DISC1** board; see `
 The improved_v6b agents shown are each process's seed with the best **validation** score (not the
 best test score). The C code supports both gain mappings (linear ranges and the anchor mapping).
 
+**The STM32 as an edge controller (hardware in the loop).** With `build.bat pc`, the board holds only
+the agent and the PID; the process runs on the PC (`stm32/pc_plant.py`).
+- **The exchange:** every sample, the PC sends the setpoint and the measured output over the UART as one text line, and the board answers with the control input and the gains it chose (protocol in `stm32/firmware/Inc/hil.h`).
+- **Tested without a board:** the board's controller code is compiled on the PC and driven through the same protocol (`pc_plant.py --sim`). The step test then gives exactly the Python numbers for all three processes.
+- **Not yet tested on the board:** none was connected.
+- **Size:** the firmware in this mode builds with no warnings, at 51,180 bytes of code.
+
 **Firmware build** (`stm32/build.bat`, arm-none-eabi-gcc 13.3 from STM32CubeIDE, STM32CubeF4 1.28.3): no warnings. With the improved_v6b agent the simulated-process version uses 44,584 bytes of code + 468 bytes of initialised data, and 3,664 bytes of RAM (with improved_v4n2 it was 42,696 bytes of code; the anchor mapping adds `powf`).
 
 **Not yet done:** no board was connected when the firmware was built, so it has not been run on hardware, and the on-chip timing of one network decision has not been measured. The firmware prints both after `stm32\flash.bat`.

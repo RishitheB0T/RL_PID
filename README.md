@@ -143,6 +143,17 @@ stm32\build.bat                                         # build the firmware
 stm32\flash.bat                                         # write it to the board
 ```
 
+**The STM32 as the edge controller** (hardware in the loop): with `stm32\build.bat pc`, the board
+holds only the RL agent and the PID. The process runs on the PC (`stm32\pc_plant.py`), which sends
+the board the setpoint and the measured output every sample and applies the control input it
+returns. The board never sees the process.
+
+```
+.\run stm32\pc_plant.py test          # step test through the board, compared with Python
+.\run stm32\pc_plant.py live          # real time with a live plot; --bump, --noise, --param K=1.2
+.\run stm32\pc_plant.py test --sim    # no board: the board's C controller compiled on the PC
+```
+
 ## Adding another case study
 
 Copy `cases/template.py` to `cases/cs4.py`. It has the same layout as `cases/cs1.py`, with the
