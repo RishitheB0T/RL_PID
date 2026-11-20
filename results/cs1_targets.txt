@@ -1,0 +1,46 @@
+Targets on the CS1: G(s) = 1/(s - 1) step test 0.0 -> 1.0
+                               Overshoot  Settling       ISE       IAE
+Classical PI                        48.8      4.00     0.401     0.914   
+Kaya 2017 PI (ISTE)                 25.9      1.80     0.131     0.293   
+Kaya 2017 PI (IST2E)                30.6      1.40     0.137     0.288   
+Kaya 2017 PID (ISTE)               590.9     20.00   468.285    95.580   
+Kaya 2017 PID (IST2E)              568.9     20.00   470.816    95.993   
+A. best classical value             25.9      1.40     0.131     0.288   (must beat all 4)
+B. authors' agent                   57.8      1.70     0.142     0.266   (must beat all 4)
+C. best fixed PID                   19.9      2.50     0.122     0.310   (must beat ISE and IAE)
+
+improved_v4n2 agents (best checkpoint on the validation tests):
+                               Overshoot  Settling       ISE       IAE   targets passed
+improved_v4n2_seed0                 32.0      1.30     0.128     0.255   A NO   B yes  C NO 
+improved_v4n2_seed1                 31.5      1.40     0.129     0.260   A NO   B yes  C NO 
+improved_v4n2_seed2                 32.5      1.40     0.126     0.252   A NO   B yes  C NO 
+AVERAGE (3 seeds)                   32.0      1.37     0.127     0.256   A NO   B yes  C NO 
+Seeds passing every target: 0 of 3
+
+improved_v6 agents (best checkpoint on the validation tests):
+                               Overshoot  Settling       ISE       IAE   targets passed
+improved_v6_seed0                   28.2      1.20     0.151     0.319   A NO   B NO   C NO 
+improved_v6_seed1                   34.9      1.20     0.126     0.231   A NO   B yes  C NO 
+improved_v6_seed2                   25.0      1.10     0.129     0.250   A yes  B yes  C NO 
+AVERAGE (3 seeds)                   29.4      1.17     0.135     0.267   A NO   B NO   C NO 
+Seeds passing every target: 0 of 3
+
+improved_v6b agents (best checkpoint on the validation tests):
+                               Overshoot  Settling       ISE       IAE   targets passed
+improved_v6b_seed0                  19.8      1.50     0.116     0.233   A NO   B yes  C yes
+improved_v6b_seed1                  17.4      1.60     0.111     0.220   A NO   B yes  C yes
+improved_v6b_seed2                  15.1      0.90     0.106     0.164   A yes  B yes  C yes
+improved_v6b_seed3                  19.1      0.90     0.110     0.184   A yes  B yes  C yes
+improved_v6b_seed4                  25.6      1.10     0.119     0.218   A yes  B yes  C yes
+AVERAGE (5 seeds)                   19.4      1.20     0.112     0.204   A yes  B yes  C yes
+Seeds passing every target: 3 of 5
+
+improved_v6c agents (best checkpoint on the validation tests):
+                               Overshoot  Settling       ISE       IAE   targets passed
+improved_v6c_seed0                  20.0      1.20     0.114     0.210   A yes  B yes  C yes
+improved_v6c_seed1                  27.3      1.10     0.120     0.215   A NO   B yes  C yes
+improved_v6c_seed2                  19.1      1.30     0.113     0.218   A yes  B yes  C yes
+improved_v6c_seed3                  20.0      1.00     0.114     0.202   A yes  B yes  C yes
+improved_v6c_seed4                  25.8      1.10     0.124     0.234   A yes  B yes  C NO 
+AVERAGE (5 seeds)                   22.4      1.14     0.117     0.216   A yes  B yes  C yes
+Seeds passing every target: 3 of 5
