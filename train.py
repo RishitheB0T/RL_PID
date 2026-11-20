@@ -84,7 +84,9 @@ env = make_vec_env(lambda: RLPIDEnv(CASE, VERSION), n_envs=1, seed=SEED, monitor
 env = VecNormalize(env, norm_obs=True, norm_reward=True, gamma=0.99)
 
 # ----- the agent and its training -----
-model = PPO("MlpPolicy", env, seed=SEED, verbose=1)
+start_std = VERSIONS[VERSION].log_std_init            # None = SB3's default exploration noise
+model = PPO("MlpPolicy", env, seed=SEED, verbose=1,
+            policy_kwargs=None if start_std is None else dict(log_std_init=start_std))
 model.set_logger(configure(OUT, ["stdout", "log"]))     # progress on screen AND in OUT/log.txt
 model.learn(total_timesteps=STEPS, callback=KeepBestOnValidation() if SELECT else None)
 

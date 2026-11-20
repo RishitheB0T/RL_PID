@@ -1,7 +1,7 @@
 # core/versions.py : the reward VERSIONS - what the agent is trained to want
 # ---------------------------------------------------------------
 # A "version" = reward function + crash penalty + gain ranges (+ optional setpoint weight b).
-# All nine versions of this project are in ONE table at the bottom of this file, in the order
+# All ten versions of this project are in ONE table at the bottom of this file, in the order
 # they were tried. "improved_v4n2" is the final one for CS1; "improved_v5" is its general form;
 # "improved_v6" starts from the best fixed PID of each case study (the three-process study).
 #
@@ -65,6 +65,8 @@ class Version:
                               # - or "anchor": around the case file's ANCHOR_PID (see above)
     weight_b: bool = False    # True = the agent has a 4th slider for the setpoint weight b
     band_bonus: float = 0.0   # reward added per sample inside the 2 % band (improved_v6)
+    log_std_init: float = None  # PPO's starting exploration noise, log of its std (None = SB3 default 0,
+                                # std 1); improved_v6b: -1.6, std 0.2 = small tries around the anchor PID
     note: str = ""            # one-line description
 
     @property
@@ -115,4 +117,6 @@ VERSIONS = {
     "improved_v5":   Version(reward_overshoot, "worst", "case",  note="v4 + gain ranges chosen per case study"),
     "improved_v6":   Version(reward_overshoot, "worst", "anchor", band_bonus=BAND_BONUS,
                              note="v5 + gains anchored on the best fixed PID + bonus inside the 2 % band"),
+    "improved_v6b":  Version(reward_overshoot, "worst", "anchor", band_bonus=BAND_BONUS, log_std_init=-1.6,
+                             note="v6 + small starting exploration (std 0.2 instead of 1)"),
 }

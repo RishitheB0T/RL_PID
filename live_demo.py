@@ -74,7 +74,10 @@ class LiveRun:
 run = LiveRun()
 
 # ===== 3. The window: process output, control input, PID gains =====
-low, high = gain_ranges(VERSION, case)
+# lowest / highest gains of the version = its gains at sliders -1 and +1 (works for every mapping)
+_v = VERSIONS[VERSION]
+low = _v.to_gains([-1.0] * _v.n_sliders, gain_ranges(VERSION, case))
+high = _v.to_gains([1.0] * _v.n_sliders, gain_ranges(VERSION, case))
 fig, (ax_y, ax_u, ax_k) = plt.subplots(3, 1, figsize=(10, 7.5), sharex=True,
                                        gridspec_kw={"height_ratios": [1.4, 1, 1]})
 line_r, = ax_y.step([], [], "k--", where="post", lw=1.2, label="Setpoint r(t)")
