@@ -3,6 +3,10 @@ Robustness test on CS1: G(s) = 1/(s - 1), step test 0.0 -> 1.0
 === nominal  (sensor noise std 0.0, process changes none, single run) ===
 Controller                       Overshoot % Settling s       ISE       IAE  Completed
 Classical PI                            48.8       4.00     0.401     0.914        yes
+Kaya 2017 PI (ISTE)                     25.9       1.80     0.131     0.293        yes
+Kaya 2017 PI (IST2E)                    30.6       1.40     0.137     0.288        yes
+Kaya 2017 PID (ISTE)                   590.9      20.00   468.285    95.580        yes
+Kaya 2017 PID (IST2E)                  568.9      20.00   470.816    95.993        yes
 Best fixed PID                          19.9       2.50     0.122     0.310        yes
 Best fixed 2-DOF PID                     0.1       0.10     0.100     0.101        yes
 RL improved_seed0                       33.9       2.80     0.120     0.296        yes
@@ -21,6 +25,19 @@ RL improved_v4n2_seed2                  32.5       1.40     0.126     0.252     
 RL improved_v4n_seed0                   21.4       2.20     0.121     0.292        yes
 RL improved_v4n_seed1                   24.9       2.20     0.133     0.323        yes
 RL improved_v4n_seed2                   19.1       2.00     0.114     0.253        yes
+RL improved_v6_seed0                    28.2       1.20     0.151     0.319        yes
+RL improved_v6_seed1                    34.9       1.20     0.126     0.231        yes
+RL improved_v6_seed2                    25.0       1.10     0.129     0.250        yes
+RL improved_v6b_seed0                   19.8       1.50     0.116     0.233        yes
+RL improved_v6b_seed1                   17.4       1.60     0.111     0.220        yes
+RL improved_v6b_seed2                   15.1       0.90     0.106     0.164        yes
+RL improved_v6b_seed3                   19.1       0.90     0.110     0.184        yes
+RL improved_v6b_seed4                   25.6       1.10     0.119     0.218        yes
+RL improved_v6c_seed0                   20.0       1.20     0.114     0.210        yes
+RL improved_v6c_seed1                   27.3       1.10     0.120     0.215        yes
+RL improved_v6c_seed2                   19.1       1.30     0.113     0.218        yes
+RL improved_v6c_seed3                   20.0       1.00     0.114     0.202        yes
+RL improved_v6c_seed4                   25.8       1.10     0.124     0.234        yes
 RL paper_seed0                          67.9       2.00     0.162     0.296        yes
 RL paper_seed1                          46.6       2.30     0.129     0.279        yes
 RL paper_seed2                          51.6       2.40     0.136     0.298        yes
@@ -28,6 +45,10 @@ RL paper_seed2                          51.6       2.40     0.136     0.298     
 === noise 0.01  (sensor noise std 0.01, process changes none, mean of 10 noise seeds) ===
 Controller                       Overshoot % Settling s       ISE       IAE  Completed
 Classical PI                            49.0       4.79     0.404     0.985        yes
+Kaya 2017 PI (ISTE)                     26.3      18.36     0.134     0.431        yes
+Kaya 2017 PI (IST2E)                    31.0      17.14     0.140     0.427        yes
+Kaya 2017 PID (ISTE)                   582.3      20.00   468.727    95.650        yes
+Kaya 2017 PID (IST2E)                  569.4      20.00   470.974    96.032        yes
 Best fixed PID                          19.9      19.33     0.126     0.466        yes
 Best fixed 2-DOF PID                     3.1      19.28     0.104     0.282        yes
 RL improved_seed0                       33.9      19.94     0.129     0.538        yes
@@ -46,6 +67,19 @@ RL improved_v4n2_seed2                  32.8      19.26     0.129     0.424     
 RL improved_v4n_seed0                   21.8      19.33     0.125     0.462        yes
 RL improved_v4n_seed1                   24.9      18.97     0.136     0.469        yes
 RL improved_v4n_seed2                   19.1      19.59     0.119     0.443        yes
+RL improved_v6_seed0                    28.4      16.47     0.153     0.439        yes
+RL improved_v6_seed1                    35.3      18.97     0.130     0.390        yes
+RL improved_v6_seed2                    24.6      16.91     0.131     0.380        yes
+RL improved_v6b_seed0                   20.4      18.94     0.120     0.389        yes
+RL improved_v6b_seed1                   17.3      19.33     0.115     0.402        yes
+RL improved_v6b_seed2                   15.2      19.40     0.110     0.333        yes
+RL improved_v6b_seed3                   19.0      19.51     0.114     0.363        yes
+RL improved_v6b_seed4                   25.6      19.53     0.123     0.401        yes
+RL improved_v6c_seed0                   20.8      19.40     0.118     0.395        yes
+RL improved_v6c_seed1                   27.7      19.40     0.123     0.382        yes
+RL improved_v6c_seed2                   18.9      19.59     0.118     0.406        yes
+RL improved_v6c_seed3                   20.4      18.98     0.117     0.359        yes
+RL improved_v6c_seed4                   26.2      19.60     0.128     0.421        yes
 RL paper_seed0                          68.1      19.92     0.189     0.805        yes
 RL paper_seed1                          46.7      19.94     0.138     0.522        yes
 RL paper_seed2                          51.8      19.92     0.145     0.533        yes
@@ -53,6 +87,10 @@ RL paper_seed2                          51.8      19.92     0.145     0.533     
 === noise 0.05  (sensor noise std 0.05, process changes none, mean of 10 noise seeds) ===
 Controller                       Overshoot % Settling s       ISE       IAE  Completed
 Classical PI                            50.1      19.78     0.429     1.293        yes
+Kaya 2017 PI (ISTE)                     28.7      19.96     0.184     1.014        yes
+Kaya 2017 PI (IST2E)                    33.1      19.95     0.188     0.999        yes
+Kaya 2017 PID (ISTE)                   583.8      20.00   470.162    95.831        yes
+Kaya 2017 PID (IST2E)                  579.7      20.00   472.140    96.169        yes
 Best fixed PID                          23.7      19.98     0.199     1.155        yes
 Best fixed 2-DOF PID                    15.6      19.98     0.171     1.010        yes
 RL improved_seed0                       34.4      20.00     0.308     1.689        yes
@@ -71,6 +109,19 @@ RL improved_v4n2_seed2                  33.6      19.99     0.199     1.135     
 RL improved_v4n_seed0                   24.3      19.98     0.205     1.204        yes
 RL improved_v4n_seed1                   27.4      19.98     0.196     1.101        yes
 RL improved_v4n_seed2                   24.0      19.97     0.215     1.275        yes
+RL improved_v6_seed0                    30.2      19.97     0.191     0.950        yes
+RL improved_v6_seed1                    36.5      19.96     0.190     1.050        yes
+RL improved_v6_seed2                    27.3      19.95     0.171     0.912        yes
+RL improved_v6b_seed0                   23.9      19.99     0.181     1.046        yes
+RL improved_v6b_seed1                   22.9      19.98     0.199     1.178        yes
+RL improved_v6b_seed2                   18.8      19.97     0.174     1.029        yes
+RL improved_v6b_seed3                   21.8      19.99     0.187     1.098        yes
+RL improved_v6b_seed4                   29.1      19.99     0.201     1.157        yes
+RL improved_v6c_seed0                   25.9      19.97     0.199     1.168        yes
+RL improved_v6c_seed1                   29.6      19.96     0.188     1.068        yes
+RL improved_v6c_seed2                   23.8      20.00     0.208     1.224        yes
+RL improved_v6c_seed3                   23.0      19.96     0.176     1.025        yes
+RL improved_v6c_seed4                   30.3      19.98     0.208     1.191        yes
 RL paper_seed0                          68.8      19.99     0.812     3.047        yes
 RL paper_seed1                          47.1      19.99     0.304     1.635        yes
 RL paper_seed2                          52.3      19.99     0.303     1.606        yes
@@ -78,6 +129,10 @@ RL paper_seed2                          52.3      19.99     0.303     1.606     
 === a = 0.8  (sensor noise std 0.0, process changes {'a': 0.8}, single run) ===
 Controller                       Overshoot % Settling s       ISE       IAE  Completed
 Classical PI                            40.5       3.00     0.330     0.803        yes
+Kaya 2017 PI (ISTE)                     23.2       1.80     0.125     0.277        yes
+Kaya 2017 PI (IST2E)                    27.7       1.40     0.131     0.276        yes
+Kaya 2017 PID (ISTE)                   591.8      20.00   470.277    95.768        yes
+Kaya 2017 PID (IST2E)                  590.1      20.00   473.049    96.193        yes
 Best fixed PID                          18.7       2.40     0.118     0.288        yes
 Best fixed 2-DOF PID                     0.0       0.10     0.100     0.134        yes
 RL improved_seed0                       32.5       2.60     0.117     0.273        yes
@@ -96,6 +151,19 @@ RL improved_v4n2_seed2                  29.2       1.40     0.122     0.243     
 RL improved_v4n_seed0                   18.7       2.10     0.118     0.275        yes
 RL improved_v4n_seed1                   23.2       2.10     0.129     0.306        yes
 RL improved_v4n_seed2                   17.0       1.90     0.111     0.237        yes
+RL improved_v6_seed0                    25.0       1.30     0.145     0.302        yes
+RL improved_v6_seed1                    31.3       1.20     0.121     0.221        yes
+RL improved_v6_seed2                    22.5       1.10     0.126     0.239        yes
+RL improved_v6b_seed0                   17.4       1.50     0.113     0.222        yes
+RL improved_v6b_seed1                   15.5       1.50     0.109     0.209        yes
+RL improved_v6b_seed2                   12.7       0.80     0.104     0.155        yes
+RL improved_v6b_seed3                   17.8       0.90     0.108     0.175        yes
+RL improved_v6b_seed4                   23.5       1.00     0.116     0.210        yes
+RL improved_v6c_seed0                   18.1       1.20     0.111     0.203        yes
+RL improved_v6c_seed1                   24.8       1.10     0.117     0.208        yes
+RL improved_v6c_seed2                   17.9       1.30     0.111     0.207        yes
+RL improved_v6c_seed3                   17.6       1.00     0.111     0.194        yes
+RL improved_v6c_seed4                   23.6       1.10     0.120     0.226        yes
 RL paper_seed0                          66.2       1.80     0.160     0.292        yes
 RL paper_seed1                          45.1       2.10     0.127     0.263        yes
 RL paper_seed2                          50.1       2.20     0.133     0.282        yes
@@ -103,6 +171,10 @@ RL paper_seed2                          50.1       2.20     0.133     0.282     
 === a = 1.2  (sensor noise std 0.0, process changes {'a': 1.2}, single run) ===
 Controller                       Overshoot % Settling s       ISE       IAE  Completed
 Classical PI                            58.2       4.40     0.497     1.049        yes
+Kaya 2017 PI (ISTE)                     28.8       1.80     0.137     0.308        yes
+Kaya 2017 PI (IST2E)                    33.7       1.40     0.144     0.301        yes
+Kaya 2017 PID (ISTE)                   589.4      20.00   466.238    95.385        yes
+Kaya 2017 PID (IST2E)                  586.2      20.00   468.666    95.787        yes
 Best fixed PID                          21.2       2.50     0.127     0.333        yes
 Best fixed 2-DOF PID                     2.1       0.40     0.100     0.135        yes
 RL improved_seed0                       35.2       3.00     0.123     0.319        yes
@@ -121,6 +193,19 @@ RL improved_v4n2_seed2                  36.1       1.40     0.130     0.261     
 RL improved_v4n_seed0                   24.1       2.30     0.125     0.308        yes
 RL improved_v4n_seed1                   26.7       2.20     0.138     0.340        yes
 RL improved_v4n_seed2                   21.4       2.00     0.118     0.269        yes
+RL improved_v6_seed0                    31.9       1.70     0.159     0.338        yes
+RL improved_v6_seed1                    38.6       1.20     0.131     0.241        yes
+RL improved_v6_seed2                    27.3       1.10     0.133     0.261        yes
+RL improved_v6b_seed0                   22.4       1.50     0.120     0.243        yes
+RL improved_v6b_seed1                   19.3       1.60     0.113     0.231        yes
+RL improved_v6b_seed2                   17.5       0.90     0.108     0.173        yes
+RL improved_v6b_seed3                   20.3       0.90     0.112     0.192        yes
+RL improved_v6b_seed4                   27.8       1.10     0.122     0.226        yes
+RL improved_v6c_seed0                   22.0       1.20     0.116     0.217        yes
+RL improved_v6c_seed1                   29.9       1.10     0.123     0.222        yes
+RL improved_v6c_seed2                   20.3       1.30     0.116     0.227        yes
+RL improved_v6c_seed3                   22.5       1.00     0.116     0.210        yes
+RL improved_v6c_seed4                   28.0       1.10     0.127     0.242        yes
 RL paper_seed0                          69.6       2.00     0.164     0.302        yes
 RL paper_seed1                          48.1       2.40     0.132     0.294        yes
 RL paper_seed2                          53.2       2.50     0.140     0.314        yes
@@ -128,6 +213,10 @@ RL paper_seed2                          53.2       2.50     0.140     0.314     
 === K = 0.8  (sensor noise std 0.0, process changes {'K': 0.8}, single run) ===
 Controller                       Overshoot % Settling s       ISE       IAE  Completed
 Classical PI                            60.2       5.10     0.596     1.271        yes
+Kaya 2017 PI (ISTE)                     29.8       1.80     0.150     0.353        yes
+Kaya 2017 PI (IST2E)                    34.8       1.40     0.160     0.344        yes
+Kaya 2017 PID (ISTE)                    51.8       2.80     0.178     0.423        yes
+Kaya 2017 PID (IST2E)                   57.5       2.80     0.192     0.463        yes
 Best fixed PID                          21.0       2.60     0.130     0.346        yes
 Best fixed 2-DOF PID                     3.7       1.50     0.105     0.187        yes
 RL improved_seed0                       15.6       3.20     0.117     0.326        yes
@@ -146,6 +235,19 @@ RL improved_v4n2_seed2                  28.0       1.40     0.139     0.286     
 RL improved_v4n_seed0                   20.4       2.40     0.137     0.340        yes
 RL improved_v4n_seed1                   23.7       2.20     0.154     0.377        yes
 RL improved_v4n_seed2                   19.9       2.20     0.126     0.311        yes
+RL improved_v6_seed0                    32.6       2.10     0.182     0.404        yes
+RL improved_v6_seed1                    29.3       1.20     0.129     0.251        yes
+RL improved_v6_seed2                    31.4       1.20     0.153     0.317        yes
+RL improved_v6b_seed0                   22.6       1.50     0.124     0.263        yes
+RL improved_v6b_seed1                   21.3       1.80     0.124     0.281        yes
+RL improved_v6b_seed2                   19.1       1.00     0.113     0.201        yes
+RL improved_v6b_seed3                   20.1       1.00     0.117     0.212        yes
+RL improved_v6b_seed4                   28.3       1.10     0.128     0.241        yes
+RL improved_v6c_seed0                   22.5       1.20     0.123     0.243        yes
+RL improved_v6c_seed1                   30.3       1.10     0.134     0.261        yes
+RL improved_v6c_seed2                   18.0       1.20     0.114     0.213        yes
+RL improved_v6c_seed3                   23.7       1.10     0.130     0.250        yes
+RL improved_v6c_seed4                   30.8       1.10     0.134     0.252        yes
 RL paper_seed0                          34.3       2.00     0.119     0.258        yes
 RL paper_seed1                          17.3       2.60     0.116     0.293        yes
 RL paper_seed2                          21.3       2.70     0.118     0.305        yes
@@ -153,6 +255,10 @@ RL paper_seed2                          21.3       2.70     0.118     0.305     
 === K = 1.2  (sensor noise std 0.0, process changes {'K': 1.2}, single run) ===
 Controller                       Overshoot % Settling s       ISE       IAE  Completed
 Classical PI                            41.4       2.90     0.304     0.738        yes
+Kaya 2017 PI (ISTE)                     24.0       1.70     0.124     0.272        yes
+Kaya 2017 PI (IST2E)                    28.0       1.40     0.127     0.260        yes
+Kaya 2017 PID (ISTE)                   755.7      20.00   692.052   116.805        yes
+Kaya 2017 PID (IST2E)                  810.8      20.00   693.883   116.964        yes
 Best fixed PID                          43.9       2.30     0.130     0.292        yes
 Best fixed 2-DOF PID                    20.0       0.70     0.105     0.168        yes
 RL improved_seed0                       60.6       2.60     0.171     0.379        yes
@@ -171,6 +277,19 @@ RL improved_v4n2_seed2                  33.4       1.30     0.122     0.222     
 RL improved_v4n_seed0                   19.4       2.00     0.113     0.250        yes
 RL improved_v4n_seed1                   26.4       2.10     0.120     0.278        yes
 RL improved_v4n_seed2                   26.4       1.70     0.114     0.235        yes
+RL improved_v6_seed0                    26.5       1.20     0.134     0.274        yes
+RL improved_v6_seed1                    33.1       1.10     0.129     0.234        yes
+RL improved_v6_seed2                    23.3       1.00     0.116     0.212        yes
+RL improved_v6b_seed0                   20.7       1.50     0.117     0.239        yes
+RL improved_v6b_seed1                   34.1       1.30     0.115     0.202        yes
+RL improved_v6b_seed2                   27.2       0.70     0.109     0.157        yes
+RL improved_v6b_seed3                   42.9       0.80     0.121     0.182        yes
+RL improved_v6b_seed4                   42.6       1.00     0.124     0.209        yes
+RL improved_v6c_seed0                   29.0       1.20     0.117     0.217        yes
+RL improved_v6c_seed1                   25.3       1.00     0.115     0.201        yes
+RL improved_v6c_seed2                   42.9       1.50     0.135     0.264        yes
+RL improved_v6c_seed3                   16.4       0.90     0.106     0.164        yes
+RL improved_v6c_seed4                   49.6       1.00     0.132     0.225        yes
 RL paper_seed0                         101.4      20.00     7.521    12.236        yes
 RL paper_seed1                          75.9       2.20     0.211     0.406        yes
 RL paper_seed2                          82.0       2.20     0.247     0.456        yes
@@ -182,7 +301,14 @@ paper                        55.4       55.5       56.1       53.8       57.0   
 improved_v2                  13.7       13.9       25.5       12.1       15.4       16.7       28.9
 improved_v3                  13.5       15.9       39.6       12.6       14.5       15.4      212.8
 improved_v4n2                32.0       32.2       33.4       29.3       34.8       30.2       28.4
+improved_v6                  29.4       29.4       31.3       26.3       32.6       31.1       27.7
+improved_v6b                 19.4       19.5       23.3       17.4       21.5       22.3       33.5
+improved_v6c                 22.4       22.8       26.5       20.4       24.5       25.0       32.6
 Classical PI                 48.8       49.0       50.1       40.5       58.2       60.2       41.4
+Kaya 2017 PI (ISTE)          25.9       26.3       28.7       23.2       28.8       29.8       24.0
+Kaya 2017 PI (IST2E)         30.6       31.0       33.1       27.7       33.7       34.8       28.0
+Kaya 2017 PID (ISTE)        590.9      582.3      583.8      591.8      589.4       51.8      755.7
+Kaya 2017 PID (IST2E)       568.9      569.4      579.7      590.1      586.2       57.5      810.8
 Best fixed PID               19.9       19.9       23.7       18.7       21.2       21.0       43.9
 Best fixed 2-DOF PID          0.1        3.1       15.6        0.0        2.1        3.7       20.0
 
@@ -191,7 +317,14 @@ paper                        2.23      19.93      19.99       2.03       2.30   
 improved_v2                  3.43      19.86      19.98       3.13       3.63       3.77       3.03
 improved_v3                  3.80      19.94      19.99       3.77       3.87       3.90       9.50
 improved_v4n2                1.37      19.19      19.99       1.37       1.37       1.40       1.27
+improved_v6                  1.17      17.45      19.96       1.20       1.33       1.50       1.10
+improved_v6b                 1.20      19.34      19.98       1.14       1.20       1.28       1.06
+improved_v6c                 1.14      19.39      19.97       1.14       1.14       1.14       1.12
 Classical PI                 4.00       4.79      19.78       3.00       4.40       5.10       2.90
+Kaya 2017 PI (ISTE)          1.80      18.36      19.96       1.80       1.80       1.80       1.70
+Kaya 2017 PI (IST2E)         1.40      17.14      19.95       1.40       1.40       1.40       1.40
+Kaya 2017 PID (ISTE)        20.00      20.00      20.00      20.00      20.00       2.80      20.00
+Kaya 2017 PID (IST2E)       20.00      20.00      20.00      20.00      20.00       2.80      20.00
 Best fixed PID               2.50      19.33      19.98       2.40       2.50       2.60       2.30
 Best fixed 2-DOF PID         0.10      19.28      19.98       0.10       0.40       1.50       0.70
 
@@ -200,7 +333,14 @@ paper                       0.143      0.157      0.473      0.140      0.146   
 improved_v2                 0.113      0.120      0.253      0.110      0.117      0.122      0.118
 improved_v3                 0.175      0.198      0.721      0.177      0.174      0.180    222.691
 improved_v4n2               0.127      0.131      0.201      0.124      0.131      0.144      0.120
+improved_v6                 0.135      0.138      0.184      0.131      0.141      0.155      0.127
+improved_v6b                0.112      0.116      0.188      0.110      0.115      0.121      0.117
+improved_v6c                0.117      0.121      0.196      0.114      0.120      0.127      0.121
 Classical PI                0.401      0.404      0.429      0.330      0.497      0.596      0.304
+Kaya 2017 PI (ISTE)         0.131      0.134      0.184      0.125      0.137      0.150      0.124
+Kaya 2017 PI (IST2E)        0.137      0.140      0.188      0.131      0.144      0.160      0.127
+Kaya 2017 PID (ISTE)      468.285    468.727    470.162    470.277    466.238      0.178    692.052
+Kaya 2017 PID (IST2E)     470.816    470.974    472.140    473.049    468.666      0.192    693.883
 Best fixed PID              0.122      0.126      0.199      0.118      0.127      0.130      0.130
 Best fixed 2-DOF PID        0.100      0.104      0.171      0.100      0.100      0.105      0.105
 
@@ -209,7 +349,14 @@ paper                       0.291      0.620      2.096      0.279      0.303   
 improved_v2                 0.318      0.512      1.473      0.289      0.346      0.381      0.299
 improved_v3                 0.491      0.879      2.691      0.487      0.495      0.514     38.195
 improved_v4n2               0.256      0.427      1.138      0.248      0.264      0.299      0.226
+improved_v6                 0.267      0.403      0.971      0.254      0.280      0.324      0.240
+improved_v6b                0.204      0.377      1.101      0.194      0.213      0.240      0.198
+improved_v6c                0.216      0.393      1.135      0.208      0.224      0.244      0.214
 Classical PI                0.914      0.985      1.293      0.803      1.049      1.271      0.738
+Kaya 2017 PI (ISTE)         0.293      0.431      1.014      0.277      0.308      0.353      0.272
+Kaya 2017 PI (IST2E)        0.288      0.427      0.999      0.276      0.301      0.344      0.260
+Kaya 2017 PID (ISTE)       95.580     95.650     95.831     95.768     95.385      0.423    116.805
+Kaya 2017 PID (IST2E)      95.993     96.032     96.169     96.193     95.787      0.463    116.964
 Best fixed PID              0.310      0.466      1.155      0.288      0.333      0.346      0.292
 Best fixed 2-DOF PID        0.101      0.282      1.010      0.134      0.135      0.187      0.168
 
@@ -218,8 +365,15 @@ paper                         3/3      30/30      30/30        3/3        3/3   
 improved_v2                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
 improved_v3                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
 improved_v4n2                 3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v6                   3/3      30/30      30/30        3/3        3/3        3/3        3/3
+improved_v6b                  5/5      50/50      50/50        5/5        5/5        5/5        5/5
+improved_v6c                  5/5      50/50      50/50        5/5        5/5        5/5        5/5
 Classical PI                  1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Kaya 2017 PI (ISTE)           1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Kaya 2017 PI (IST2E)          1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Kaya 2017 PID (ISTE)          1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Kaya 2017 PID (IST2E)         1/1      10/10      10/10        1/1        1/1        1/1        1/1
 Best fixed PID                1/1      10/10      10/10        1/1        1/1        1/1        1/1
 Best fixed 2-DOF PID          1/1      10/10      10/10        1/1        1/1        1/1        1/1
 
-Settling 20.00 s = still outside the 2 % band at the end of the test.
+Settling 20.00 = still outside the 2 % band at the end of the test.

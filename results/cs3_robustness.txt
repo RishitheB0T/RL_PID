@@ -1,0 +1,167 @@
+Robustness test on CS3: G(s) = (0.77248s - 0.1727)/(3.1s - 1)  (authors' CS3), step test 0.0 -> 1.0
+
+=== nominal  (sensor noise std 0.0, process changes none, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Kaya 2017 PI (ISTE)                    146.6      18.00     4.342     5.671        yes
+Kaya 2017 PI (IST2E)                   134.4      10.00     3.210     3.609        yes
+Kaya 2017 PID (ISTE)                   257.2     200.00   285.057   208.038        yes
+Kaya 2017 PID (IST2E)                  271.8     200.00   289.713   205.329        yes
+Best fixed PID                          56.7       9.00     1.844     3.179        yes
+Best fixed 2-DOF PID                     0.3       1.00     1.000     1.004        yes
+RL improved_v6_seed0                    63.8      10.00     1.434     2.082        yes
+RL improved_v6_seed1                    41.2      13.00     1.331     2.498        yes
+RL improved_v6b_seed0                   36.4       6.00     1.196     1.742        yes
+RL improved_v6b_seed1                   32.0       8.00     1.188     1.759        yes
+RL improved_v6b_seed2                   32.1       5.00     1.136     1.599        yes
+RL improved_v6b_seed3                   25.1       7.00     1.122     1.721        yes
+RL improved_v6b_seed4                   39.8       5.00     1.228     1.815        yes
+
+=== noise 0.01  (sensor noise std 0.01, process changes none, mean of 10 noise seeds) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Kaya 2017 PI (ISTE)                    147.4     199.30     4.822    12.268        yes
+Kaya 2017 PI (IST2E)                   135.0     199.50     3.474     8.520        yes
+Kaya 2017 PID (ISTE)                   268.0     200.00   301.478   211.419        yes
+Kaya 2017 PID (IST2E)                  261.2     200.00   313.296   216.428        yes
+Best fixed PID                          56.8     199.00     1.934     6.020        yes
+Best fixed 2-DOF PID                     4.2     196.60     1.061     3.447        yes
+RL improved_v6_seed0                    63.7     197.30     1.488     4.292        yes
+RL improved_v6_seed1                    41.0     196.50     1.386     4.744        yes
+RL improved_v6b_seed0                   36.5     198.20     1.273     4.559        yes
+RL improved_v6b_seed1                   32.1     197.80     1.254     4.295        yes
+RL improved_v6b_seed2                   32.0     196.10     1.186     3.793        yes
+RL improved_v6b_seed3                   25.8     195.20     1.171     3.735        yes
+RL improved_v6b_seed4                   39.9     197.90     1.293     4.281        yes
+
+=== noise 0.05  (sensor noise std 0.05, process changes none, mean of 10 noise seeds) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Kaya 2017 PI (ISTE)                    146.0     199.90    14.008    39.297        yes
+Kaya 2017 PI (IST2E)                   135.1     200.00     8.309    28.209        yes
+Kaya 2017 PID (ISTE)                   270.1     200.00   313.206   215.055        yes
+Kaya 2017 PID (IST2E)                  263.4     200.00   314.808   216.343        yes
+Best fixed PID                          59.0     199.80     3.687    17.578        yes
+Best fixed 2-DOF PID                    20.9     199.80     2.255    13.235        yes
+RL improved_v6_seed0                    63.1     200.00     2.681    13.978        yes
+RL improved_v6_seed1                    41.6     200.00     2.595    14.320        yes
+RL improved_v6b_seed0                   38.9     199.80     3.003    16.356        yes
+RL improved_v6b_seed1                   38.4     199.70     2.691    14.959        yes
+RL improved_v6b_seed2                   36.9     200.00     2.540    14.189        yes
+RL improved_v6b_seed3                   32.8     199.80     2.286    13.101        yes
+RL improved_v6b_seed4                   41.0     199.80     2.658    14.607        yes
+
+=== pole -20%  (sensor noise std 0.0, process changes {'pole': 0.8}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Kaya 2017 PI (ISTE)                    138.4      20.00     5.082     6.918        yes
+Kaya 2017 PI (IST2E)                   126.6      10.00     3.060     3.680        yes
+Kaya 2017 PID (ISTE)                   259.6     200.00   301.294   213.967        yes
+Kaya 2017 PID (IST2E)                  245.1     200.00   322.712   221.017        yes
+Best fixed PID                          51.5      10.00     1.645     2.928        yes
+Best fixed 2-DOF PID                     0.0       9.00     1.016     1.440        yes
+RL improved_v6_seed0                    57.5      10.00     1.354     1.952        yes
+RL improved_v6_seed1                    34.2      10.00     1.227     2.168        yes
+RL improved_v6b_seed0                   31.8       7.00     1.146     1.641        yes
+RL improved_v6b_seed1                   27.6       5.00     1.134     1.596        yes
+RL improved_v6b_seed2                   27.5       4.00     1.095     1.461        yes
+RL improved_v6b_seed3                   20.0      10.00     1.087     1.777        yes
+RL improved_v6b_seed4                   35.1       6.00     1.169     1.730        yes
+
+=== pole +20%  (sensor noise std 0.0, process changes {'pole': 1.2}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Kaya 2017 PI (ISTE)                    155.2      14.00     3.814     4.299        yes
+Kaya 2017 PI (IST2E)                   142.6       8.00     3.376     3.527        yes
+Kaya 2017 PID (ISTE)                   280.4     200.00   317.351   219.428        yes
+Kaya 2017 PID (IST2E)                  261.1     200.00   299.787   210.573        yes
+Best fixed PID                          62.1       8.00     2.097     3.462        yes
+Best fixed 2-DOF PID                     7.4       9.00     1.018     1.442        yes
+RL improved_v6_seed0                    70.6      14.00     1.539     2.341        yes
+RL improved_v6_seed1                    48.3      16.00     1.464     2.893        yes
+RL improved_v6b_seed0                   41.1       9.00     1.264     1.963        yes
+RL improved_v6b_seed1                   36.6       9.00     1.261     1.951        yes
+RL improved_v6b_seed2                   37.3       7.00     1.192     1.788        yes
+RL improved_v6b_seed3                   30.8       5.00     1.173     1.812        yes
+RL improved_v6b_seed4                   44.6       9.00     1.305     1.990        yes
+
+=== K = 0.8  (sensor noise std 0.0, process changes {'K': 0.8}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Kaya 2017 PI (ISTE)                     97.3       9.00     2.104     2.899        yes
+Kaya 2017 PI (IST2E)                    87.5       8.00     2.018     2.811        yes
+Kaya 2017 PID (ISTE)                   200.4     200.00   169.372   160.705        yes
+Kaya 2017 PID (IST2E)                  183.7     199.00   169.119   158.028        yes
+Best fixed PID                          60.5      14.00     2.130     3.744        yes
+Best fixed 2-DOF PID                    11.2      12.00     1.093     1.948        yes
+RL improved_v6_seed0                    70.1      24.00     2.340     4.751        yes
+RL improved_v6_seed1                    53.7      23.00     1.863     3.904        yes
+RL improved_v6b_seed0                   52.0      12.00     1.486     2.658        yes
+RL improved_v6b_seed1                   54.3      12.00     1.399     2.311        yes
+RL improved_v6b_seed2                   53.8      11.00     1.366     2.250        yes
+RL improved_v6b_seed3                   46.7      14.00     1.550     3.159        yes
+RL improved_v6b_seed4                   49.5       9.00     1.471     2.638        yes
+
+=== K = 1.2  (sensor noise std 0.0, process changes {'K': 1.2}, single run) ===
+Controller                       Overshoot % Settling s       ISE       IAE  Completed
+Kaya 2017 PI (ISTE)                    196.0     200.00   282.117   225.167        yes
+Kaya 2017 PI (IST2E)                   181.3     200.00   314.622   248.800        yes
+Kaya 2017 PID (ISTE)                   305.2     200.00   484.463   273.877        yes
+Kaya 2017 PID (IST2E)                  346.4     200.00   480.356   265.948        yes
+Best fixed PID                          88.0      16.00     2.468     3.829        yes
+Best fixed 2-DOF PID                    20.3      10.00     1.084     1.773        yes
+RL improved_v6_seed0                    35.6       6.00     1.223     1.875        yes
+RL improved_v6_seed1                    35.9       8.00     1.177     1.837        yes
+RL improved_v6b_seed0                   63.7      14.00     1.705     3.092        yes
+RL improved_v6b_seed1                   58.4       8.00     1.462     2.249        yes
+RL improved_v6b_seed2                   40.6       5.00     1.220     1.772        yes
+RL improved_v6b_seed3                   46.5       6.00     1.301     2.002        yes
+RL improved_v6b_seed4                   67.7       8.00     1.632     2.551        yes
+
+=== Summary: group averages (RL groups = mean of their seeds) ===
+
+Overshoot %               nominal noise 0.01 noise 0.05  pole -20%  pole +20%    K = 0.8    K = 1.2
+improved_v6                  52.5       52.3       52.3       45.9       59.5       61.9       35.7
+improved_v6b                 33.1       33.3       37.6       28.4       38.1       51.3       55.4
+Kaya 2017 PI (ISTE)         146.6      147.4      146.0      138.4      155.2       97.3      196.0
+Kaya 2017 PI (IST2E)        134.4      135.0      135.1      126.6      142.6       87.5      181.3
+Kaya 2017 PID (ISTE)        257.2      268.0      270.1      259.6      280.4      200.4      305.2
+Kaya 2017 PID (IST2E)       271.8      261.2      263.4      245.1      261.1      183.7      346.4
+Best fixed PID               56.7       56.8       59.0       51.5       62.1       60.5       88.0
+Best fixed 2-DOF PID          0.3        4.2       20.9        0.0        7.4       11.2       20.3
+
+Settling s                nominal noise 0.01 noise 0.05  pole -20%  pole +20%    K = 0.8    K = 1.2
+improved_v6                 11.50     196.90     200.00      10.00      15.00      23.50       7.00
+improved_v6b                 6.20     197.04     199.82       6.40       7.80      11.60       8.20
+Kaya 2017 PI (ISTE)         18.00     199.30     199.90      20.00      14.00       9.00     200.00
+Kaya 2017 PI (IST2E)        10.00     199.50     200.00      10.00       8.00       8.00     200.00
+Kaya 2017 PID (ISTE)       200.00     200.00     200.00     200.00     200.00     200.00     200.00
+Kaya 2017 PID (IST2E)      200.00     200.00     200.00     200.00     200.00     199.00     200.00
+Best fixed PID               9.00     199.00     199.80      10.00       8.00      14.00      16.00
+Best fixed 2-DOF PID         1.00     196.60     199.80       9.00       9.00      12.00      10.00
+
+ISE                       nominal noise 0.01 noise 0.05  pole -20%  pole +20%    K = 0.8    K = 1.2
+improved_v6                 1.383      1.437      2.638      1.290      1.502      2.101      1.200
+improved_v6b                1.174      1.235      2.635      1.126      1.239      1.454      1.464
+Kaya 2017 PI (ISTE)         4.342      4.822     14.008      5.082      3.814      2.104    282.117
+Kaya 2017 PI (IST2E)        3.210      3.474      8.309      3.060      3.376      2.018    314.622
+Kaya 2017 PID (ISTE)      285.057    301.478    313.206    301.294    317.351    169.372    484.463
+Kaya 2017 PID (IST2E)     289.713    313.296    314.808    322.712    299.787    169.119    480.356
+Best fixed PID              1.844      1.934      3.687      1.645      2.097      2.130      2.468
+Best fixed 2-DOF PID        1.000      1.061      2.255      1.016      1.018      1.093      1.084
+
+IAE                       nominal noise 0.01 noise 0.05  pole -20%  pole +20%    K = 0.8    K = 1.2
+improved_v6                 2.290      4.518     14.149      2.060      2.617      4.328      1.856
+improved_v6b                1.727      4.133     14.642      1.641      1.901      2.603      2.333
+Kaya 2017 PI (ISTE)         5.671     12.268     39.297      6.918      4.299      2.899    225.167
+Kaya 2017 PI (IST2E)        3.609      8.520     28.209      3.680      3.527      2.811    248.800
+Kaya 2017 PID (ISTE)      208.038    211.419    215.055    213.967    219.428    160.705    273.877
+Kaya 2017 PID (IST2E)     205.329    216.428    216.343    221.017    210.573    158.028    265.948
+Best fixed PID              3.179      6.020     17.578      2.928      3.462      3.744      3.829
+Best fixed 2-DOF PID        1.004      3.447     13.235      1.440      1.442      1.948      1.773
+
+Completed runs            nominal noise 0.01 noise 0.05  pole -20%  pole +20%    K = 0.8    K = 1.2
+improved_v6                   2/2      20/20      20/20        2/2        2/2        2/2        2/2
+improved_v6b                  5/5      50/50      50/50        5/5        5/5        5/5        5/5
+Kaya 2017 PI (ISTE)           1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Kaya 2017 PI (IST2E)          1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Kaya 2017 PID (ISTE)          1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Kaya 2017 PID (IST2E)         1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Best fixed PID                1/1      10/10      10/10        1/1        1/1        1/1        1/1
+Best fixed 2-DOF PID          1/1      10/10      10/10        1/1        1/1        1/1        1/1
+
+Settling 200.00 = still outside the 2 % band at the end of the test.

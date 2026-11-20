@@ -1,0 +1,37 @@
+Extra tests on CS3: G(s) = (0.77248s - 0.1727)/(3.1s - 1)  (authors' CS3)
+
+1. Load disturbance d = 2.615 on the input, 100 samples after the step 0 -> 1
+Controller                      peak dev.     recovery  IAE after d
+improved_v6b (5 seeds)              0.079        6.200        0.385
+Kaya 2017 PI (ISTE)                 0.076        5.000        0.213
+Kaya 2017 PI (IST2E)                0.076        3.000        0.130
+Kaya 2017 PID (ISTE)                2.657      100.000      102.244
+Kaya 2017 PID (IST2E)               2.620      100.000      109.082
+Best fixed PID                      0.076        4.000        0.234
+
+2. Setpoint change 0 -> 0.25
+Controller                    overshoot %     settling          ISE          IAE
+improved_v6b (5 seeds)             39.136       11.000        0.095        0.717
+Kaya 2017 PI (ISTE)               146.648       19.000        0.324        1.664
+Kaya 2017 PI (IST2E)              134.424       10.000        0.201        0.902
+Kaya 2017 PID (ISTE)              972.163      200.000      325.043      209.985
+Kaya 2017 PID (IST2E)            1066.103      200.000      307.753      214.477
+Best fixed PID                     56.662        9.000        0.115        0.795
+
+2. Setpoint change 0 -> 1.9
+Controller                    overshoot %     settling          ISE          IAE
+improved_v6b (5 seeds)             32.451        6.000        4.173        3.207
+Kaya 2017 PI (ISTE)                53.250       10.000        5.502        5.167
+Kaya 2017 PI (IST2E)               53.250        9.000        5.720        5.033
+Kaya 2017 PID (ISTE)              138.911      200.000      291.918      204.872
+Kaya 2017 PID (IST2E)             133.800      200.000      311.097      214.077
+Best fixed PID                     53.250        9.000        6.582        6.040
+
+2. Setpoint change 1.5 -> 0.5 (down)
+Controller                    overshoot %     settling          ISE          IAE
+improved_v6b (5 seeds)             68.428        9.200        2.007        3.199
+Kaya 2017 PI (ISTE)               134.073       18.000        4.320        5.951
+Kaya 2017 PI (IST2E)              134.073       10.000        3.197        3.598
+Kaya 2017 PID (ISTE)              229.770      200.000      295.428      207.595
+Kaya 2017 PID (IST2E)             241.733      200.000      315.550      214.140
+Best fixed PID                     56.662        9.000        1.844        3.179

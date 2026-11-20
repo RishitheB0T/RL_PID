@@ -73,5 +73,5 @@ for group in SUMMARY_GROUPS:
                  for s in scenarios]
         show(f"{group:22s}" + "".join(f"{c:>11s}" for c in cells))
 show()
-show("Settling 20.00 s = still outside the 2 % band at the end of the test.")
+show(f"Settling {case.HOLD_STEPS * case.DT:.2f} = still outside the 2 % band at the end of the test.")
 show.save(results_path(f"{case.ID}_robustness.txt"))
