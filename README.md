@@ -1,30 +1,49 @@
-# RL_PID — Reinforcement-learning-tuned PID control of an unstable process
+# RL_PID — Reinforcement-learning-tuned PID control of unstable processes
 
-A PPO agent adjusts the gains of a PID controller **online** to control the open-loop unstable
-process **G(s) = 1/(s − 1)**. The project reproduces and improves the m-PPO RL-PID of
+A PPO agent adjusts the gains of a PID controller **online** to control open-loop unstable
+processes, from **G(s) = 1/(s − 1)** to a process with dead time and the authors' hardest case. The project reproduces and improves the m-PPO RL-PID of
 T. Shuprajhaa, S.K. Sujit and K. Srinivasan, *"Reinforcement learning based adaptive PID controller
 design for control of linear/nonlinear unstable processes"*, Applied Soft Computing 128 (2022) 109450.
 
 ![Live demo: the trained agent tracks setpoint changes and rejects a disturbance](results/cs1_demo.gif)
 
-## Result
+## Result: three unstable processes, easy to hard
 
-The final version (**improved_v4n2**) beats the authors' trained agent on all four step-test
-metrics, for each of its 3 training seeds and on average:
+The final version, **improved_v6b**, was tested on three open-loop unstable processes.
+Before training, the targets were fixed: beat every **published tuning rule** (Kaya 2017) on all
+four metrics, the **authors' trained agents** on all four metrics, and the **best fixed PID** (a grid
+search tuned on the test itself) on ISE and IAE. Step test 0 → 1, mean of 5 training seeds:
 
-| Step test 0 → 1 | Overshoot | Settling (2 %) | ISE | IAE |
-|---|---|---|---|---|
-| Authors' agent | 57.8 % | 1.70 s | 0.142 | 0.266 |
-| **improved_v4n2 (mean of 3 seeds)** | **32.0 %** | **1.37 s** | **0.127** | **0.256** |
+| Process | Controller | Overshoot | Settling (2 %) | ISE | IAE |
+|---|---|---|---|---|---|
+| **Easy** CS1: 1/(s − 1) | best published rule (per metric) | 25.9 % | 1.40 s | 0.131 | 0.288 |
+| | authors' agent | 57.8 % | 1.70 s | 0.142 | 0.266 |
+| | best fixed PID | 19.9 % | 2.50 s | 0.122 | 0.310 |
+| | **improved_v6b** | **19.4 %** | **1.20 s** | **0.112** | **0.204** |
+| **Medium** CS2: e^(−0.4s)/(s − 1) | best published rule (per metric) | 171.4 % | 10.40 s | 2.531 | 2.935 |
+| | best fixed PID | 122.6 % | 9.60 s | 1.933 | 2.678 |
+| | **improved_v6b** | **92.5 %** | **6.88 s** | **1.332** | **2.070** |
+| **Hard** CS3 (authors'): (0.77248s − 0.1727)/(3.1s − 1) | best published rule (per metric) | 134.4 % | 10.0 | 3.210 | 3.609 |
+| | authors' agent | 99.7 % | 58.0 | 11.266 | 17.785 |
+| | best fixed PID | 56.7 % | 9.0 | 1.844 | 3.179 |
+| | **improved_v6b** | **33.1 %** | **6.2** | **1.174** | **1.727** |
 
-**Case study 2**, the same process with a 0.4 s dead time, **G(s) = e^(−0.4s)/(s − 1)**, is much harder: every version tuned on CS1 fails. The version **improved_v5**, whose gain ranges come from a fixed-gain check of CS2, is the only one that controls it. On average it beats the best grid-search fixed PID on overshoot, settling and ISE:
+- Every target is met on average for all three processes.
+- Every seed passes every target on CS2 and CS3 (5 of 5). On CS1, 3 of 5 seeds pass; the other two settle in 1.5 and 1.6 s.
+- CS3 times are in samples (dt = 1).
 
-| CS2 step test 0 → 1 | Overshoot | Settling (2 %) | ISE | IAE |
-|---|---|---|---|---|
-| Best fixed PID (grid search) | 142.4 % | 9.20 s | 1.980 | 2.587 |
-| **improved_v5 (mean of 3 seeds)** | **103.4 %** | **7.37 s** | **1.795** | 2.763 |
+![Step test of the three processes](results/three_processes.png)
 
-Full results, robustness tests and the story of every reward version: [REPORT.md](REPORT.md).
+What made it work:
+- **Start from a good controller:** the gains are anchored on the best fixed PID.
+- **Explore close to it.**
+- **Choose the checkpoint on validation tests**, never on the final test.
+
+[REPORT.md](REPORT.md) covers the rest:
+- robustness to noise and model mismatch;
+- a load-disturbance test and new setpoint changes, including where the agents are weaker;
+- the earlier CS1 result (improved_v4n2, which beats the authors' agent on all four metrics);
+- the story of every reward version.
 
 ## How it works
 
@@ -48,14 +67,18 @@ core/         pid.py         the PID controller
               versions.py    the reward versions (one table) and the slider -> gain mapping
               env.py         the training / test environment (works for every case study)
               tools.py       loading agents, the step test, scoring, saving results
+              tuning_rules.py  published PID tuning rules (Kaya 2017), the classical baselines
+              validation.py  validation tests for choosing the checkpoint (never the final test)
 cases/        cs1.py         case study 1: G(s) = 1/(s - 1)
               cs2.py         case study 2: G(s) = e^(-0.4s)/(s - 1)  (with dead time)
+              cs3.py         case study 3: the authors' CS3, (0.77248s - 0.1727)/(3.1s - 1)
               template.py    blank template for a new case study
 stm32/        the controller in C and the firmware for the STM32F4 Discovery (see stm32/README.md)
-tests/        automatic checks (measured results, CS2 process, C code = Python)
+tests/        automatic checks (measured results, processes, tuning rules, v6, C code = Python)
 runs/         the trained agents: runs/<case>/<version>_seed<N>/
 results/      every table and plot the scripts produce
-train.py  grid_search.py  evaluate.py  robustness.py  plot_all_agents.py  live_demo.py
+train.py  grid_search.py  evaluate.py  targets.py  robustness.py  extra_tests.py
+plot_three.py  plot_all_agents.py  live_demo.py
 ```
 
 ## Setup (Windows, Python 3.14)
@@ -73,20 +96,24 @@ python -m venv .venv
 
 ```
 .\run grid_search.py cs1                          # best fixed-gain PID (baseline), ~15 s
-.\run evaluate.py cs1                             # results table + plot, ~10 s
-.\run robustness.py cs1                           # sensor noise and model mismatch, ~15 s
+.\run evaluate.py cs1                             # results table + plot
+.\run targets.py cs1                              # pass/fail against the targets
+.\run robustness.py cs1                           # sensor noise and model mismatch
+.\run extra_tests.py cs1                          # load disturbance and new setpoint changes
+.\run plot_three.py                               # the three processes in one figure
 .\run plot_all_agents.py cs1                      # all step responses in one graph
-.\run live_demo.py cs1 improved_v4n2_seed0        # watch an agent live (keys: Up/Down, d, space, n)
-.\run live_demo.py cs1 improved_v4n2_seed0 --gif demo.gif
-.\run train.py cs1 improved_v4n2 3                # train a new agent, ~8 min
+.\run live_demo.py cs1 improved_v6b_seed2         # watch an agent live (keys: Up/Down, d, space, n)
+.\run live_demo.py cs1 improved_v6b_seed2 --gif demo.gif
+.\run train.py cs1 improved_v6b 5 1000000 --select   # train a new agent, ~35 min
 .\run -m unittest discover tests                  # check that everything still works
 ```
 
-Use `cs2` instead of `cs1` for case study 2.
+Use `cs2` or `cs3` instead of `cs1` for the other case studies.
 
 Reward versions: `paper`, `improved`, `improved_v2`, `improved_v3`, `improved_v4`,
-`improved_v4n`, `improved_v4n2` (final for CS1) and `improved_v5` (the same idea with gain ranges
-chosen per case study) — see `core/versions.py`.
+`improved_v4n`, `improved_v4n2` (earlier final for CS1), `improved_v5` (gain ranges chosen per
+case study), `improved_v6` (gains anchored on the best fixed PID), **`improved_v6b`** (final, all
+three processes) and `improved_v6c`. See `core/versions.py`.
 
 ## Running on an STM32F4 (ARM Cortex-M4)
 
@@ -96,18 +123,19 @@ the DAC and ADC). The C code gives the same step-test results as Python. See
 [stm32/README.md](stm32/README.md).
 
 ```
-.\run stm32\export_agent.py cs1 improved_v4n2_seed0     # agent -> C header
-.\run stm32\verify_on_pc.py cs1 improved_v4n2_seed0     # C code vs Python, on the PC
+.\run stm32\export_agent.py cs1 improved_v6b_seed2      # agent -> C header
+.\run stm32\verify_on_pc.py cs1 improved_v6b_seed2      # C code vs Python, on the PC
 stm32\build.bat                                         # build the firmware
 stm32\flash.bat                                         # write it to the board
 ```
 
 ## Adding another case study
 
-Copy `cases/template.py` to `cases/cs3.py`. It has the same layout as `cases/cs1.py`, with the
+Copy `cases/template.py` to `cases/cs4.py`. It has the same layout as `cases/cs1.py`, with the
 process and its settings left blank. Fill in every line marked `TODO` (name, sample time, limits,
-setpoints and the `Process` class), then run the same commands with `cs3`. Until then the scripts
-list what is still missing.
+setpoints and the `Process` class), then run the same commands with `cs4`. Until then the scripts
+list what is still missing. For improved_v6b, run `grid_search.py` first and copy its best fixed
+PID into `ANCHOR_PID`.
 
 ## Author
 
