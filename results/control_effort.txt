@@ -1,0 +1,14 @@
+Control effort on the step test 0 -> 1 (TV = total variation of u = sum |u[k] - u[k-1]|)
+                                    TV nominal  TV noise 0.01  peak |u|
+--- CS1: G(s) = 1/(s - 1)
+RL improved_v6b (5 seeds)                 23.9           67.8     10.58
+Best fixed PID                            24.6           71.9     11.41
+Kaya 2017 PI (ISTE)                       20.6           52.1      9.24
+--- CS2: G(s) = e^(-0.4s)/(s - 1)
+RL improved_v6b (5 seeds)                 17.1           49.5      3.41
+Best fixed PID                            27.2           66.8      4.04
+Kaya 2017 PID (IST2E)                     34.1           60.1      5.61
+--- CS3: G(s) = (0.77248s - 0.1727)/(3.1s - 1)  (authors' CS3)
+RL improved_v6b (5 seeds)                135.4          395.4     44.47
+Best fixed PID                           190.7          554.9     53.80
+Kaya 2017 PI (IST2E)                     508.3         1204.8     88.07
