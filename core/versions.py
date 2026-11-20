@@ -1,7 +1,7 @@
 # core/versions.py : the reward VERSIONS - what the agent is trained to want
 # ---------------------------------------------------------------
 # A "version" = reward function + crash penalty + gain ranges (+ optional setpoint weight b).
-# All ten versions of this project are in ONE table at the bottom of this file, in the order
+# All eleven versions of this project are in ONE table at the bottom of this file, in the order
 # they were tried. "improved_v4n2" is the final one for CS1; "improved_v5" is its general form;
 # "improved_v6" starts from the best fixed PID of each case study (the three-process study).
 #
@@ -119,4 +119,6 @@ VERSIONS = {
                              note="v5 + gains anchored on the best fixed PID + bonus inside the 2 % band"),
     "improved_v6b":  Version(reward_overshoot, "worst", "anchor", band_bonus=BAND_BONUS, log_std_init=-1.6,
                              note="v6 + small starting exploration (std 0.2 instead of 1)"),
+    "improved_v6c":  Version(reward_overshoot, "worst", "anchor", band_bonus=5 * BAND_BONUS, log_std_init=-1.6,
+                             note="v6b + 5x band bonus (pushes settling time; tried on CS1)"),
 }
