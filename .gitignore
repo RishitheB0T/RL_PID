@@ -19,3 +19,6 @@ stm32/build/
 # Test agents and scratch files
 runs/*/*_seed9/
 *.tmp
+
+# Live hardware-in-the-loop runs (stm32/pc_plant.py)
+stm32/logs/
