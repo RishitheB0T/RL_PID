@@ -24,26 +24,30 @@ The process is simulated on the chip, or a real process is connected through the
 From the project folder:
 
 ```
-.\run stm32\export_agent.py cs1 improved_v4n2_seed0
+.\run stm32\export_agent.py cs1 improved_v6b_seed2
 ```
 
-Any trained agent of a first-order case study can be exported, for example `cs2 improved_v5_seed0`.
-The exported file in the repository is the CS1 final agent `improved_v4n2_seed0`.
+Any trained agent of a first-order case study can be exported (CS1, CS2 with its dead time,
+CS3), with either gain mapping: the linear ranges of the older versions or the improved_v6/v6b
+mapping around the anchor PID. The exported file in the repository is the CS1 agent
+`improved_v6b_seed2` (the CS1 seed with the best validation score; for CS2 and CS3 these are
+`improved_v6b_seed3`). The timing follows the case: CS1/CS2 sample every 0.1 s, CS3 every 1 s.
 
 ## 2. Check the C code against Python (on the PC)
 
 ```
-.\run stm32\verify_on_pc.py cs1 improved_v4n2_seed0
+.\run stm32\verify_on_pc.py cs1 improved_v6b_seed2
 ```
 
-This needs `gcc` on the PATH (for example MinGW). Measured result for the CS1 final agent:
+This needs `gcc` on the PATH (for example MinGW). Measured results (overshoot / settling / ISE / IAE;
+C single precision as on the Cortex-M4, Python double precision):
 
-| Step test 0 → 1 | Overshoot | Settling | ISE | IAE |
-|---|---|---|---|---|
-| Python (double precision) | 32.0 % | 1.30 s | 0.128 | 0.255 |
-| C code (single precision, as on the Cortex-M4) | 32.0 % | 1.30 s | 0.128 | 0.255 |
-
-Largest difference in the output over the whole test: 7.6 × 10⁻⁸.
+| Agent | Python | C code | Largest output difference |
+|---|---|---|---|
+| CS1 improved_v6b seed 2 | 15.1 % / 0.90 s / 0.106 / 0.164 | 15.1 % / 0.90 s / 0.106 / 0.164 | 8.5 × 10⁻⁸ |
+| CS2 improved_v6b seed 3 | 83.2 % / 5.70 s / 1.214 / 1.960 | 83.2 % / 5.70 s / 1.214 / 1.960 | 2.8 × 10⁻⁷ |
+| CS3 improved_v6b seed 3 | 25.1 % / 7.00 / 1.122 / 1.721 | 25.1 % / 7.00 / 1.122 / 1.721 | 1.4 × 10⁻⁷ |
+| CS1 improved_v4n2 seed 0 (earlier final agent) | 32.0 % / 1.30 s / 0.128 / 0.255 | 32.0 % / 1.30 s / 0.128 / 0.255 | 7.6 × 10⁻⁸ |
 
 ## 3. Build the firmware
 
@@ -57,7 +61,9 @@ cd stm32
 .\build.bat real       (real process through the DAC and ADC)
 ```
 
-Output: `build\firmware\rlpid.elf` and `rlpid.bin`. The build uses about 43 KB of flash and 4 KB of RAM.
+Output: `build\firmware\rlpid.elf` and `rlpid.bin`. With the improved_v6b agent the build uses
+44,584 bytes of code + 468 bytes of initialised data (about 45 KB of flash) and 3,664 bytes of RAM;
+no compiler warnings.
 
 ## 4. Flash and run
 
