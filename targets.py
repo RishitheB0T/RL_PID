@@ -1,6 +1,7 @@
 # targets.py : did the agents beat the numbers they must beat?  (pass / fail table)
 # ---------------------------------------------------------------
-# Usage:   .\run targets.py <case> [version]        e.g.  .\run targets.py cs3 improved_v6
+# Usage:   .\run targets.py <case> [version ...]    e.g.  .\run targets.py cs3 improved_v6b
+#          (no version given: improved_v4n2, v5, v6, v6b and v6c - those with agents)
 #
 # The targets (fixed BEFORE training, see THREE_PROCESS_PLAN.md):
 #   A. every classical tuning rule of the case file (CLASSICAL): beaten on ALL FOUR metrics
@@ -16,7 +17,8 @@ from core.tools import (Printer, completed, find_agents, fixed, load_agent, load
                         results_path, run_test, score, version_of)
 
 case = load_case(sys.argv[1] if len(sys.argv) > 1 else "cs1")
-VERSION = sys.argv[2] if len(sys.argv) > 2 else "improved_v6"
+# which versions to check (default: the three-process versions; any without agents are skipped)
+VERSIONS_TO_CHECK = sys.argv[2:] or ["improved_v4n2", "improved_v5", "improved_v6", "improved_v6b", "improved_v6c"]
 show = Printer()
 
 
@@ -59,19 +61,19 @@ def verdict(m):
     return "  ".join(parts)
 
 
-show("")
-show(f"{VERSION} agents (best checkpoint on the validation tests):")
-show(header + "   targets passed")
-rows = []
-for name, _ in find_agents(case.ID):
-    if version_of(name) == VERSION:
-        m = measured(load_agent(case, name))
-        rows.append(m)
-        show(line(name, m, verdict(m)))
-if rows:
-    m = np.mean(rows, axis=0)
-    show(line(f"AVERAGE ({len(rows)} seeds)", m, verdict(m)))
-    show(f"Seeds passing every target: {sum(verdict(r).count('NO') == 0 for r in rows)} of {len(rows)}")
-else:
-    show(f"(no trained {VERSION} agents in runs/{case.ID}/)")
+for version in VERSIONS_TO_CHECK:
+    rows = []
+    for name, _ in find_agents(case.ID):
+        if version_of(name) == version:
+            if not rows:
+                show("")
+                show(f"{version} agents (best checkpoint on the validation tests):")
+                show(header + "   targets passed")
+            m = measured(load_agent(case, name))
+            rows.append(m)
+            show(line(name, m, verdict(m)))
+    if rows:
+        m = np.mean(rows, axis=0)
+        show(line(f"AVERAGE ({len(rows)} seeds)", m, verdict(m)))
+        show(f"Seeds passing every target: {sum(verdict(r).count('NO') == 0 for r in rows)} of {len(rows)}")
 show.save(results_path(f"{case.ID}_targets.txt"))
