@@ -2,18 +2,23 @@
 
 **Project:** B.Tech final-year project. Reproduction and improvement of the m-PPO RL-tuned PID of Shuprajhaa, Sujit and Srinivasan, *Applied Soft Computing* 128 (2022) 109450.
 
-**Case studies** (sample time 0.1 s):
+**Case studies:**
 
-| Case | Process |
-|---|---|
-| CS1 | G(s) = 1/(s − 1) — Sections 1–6 |
-| CS2 | G(s) = e^(−0.4s)/(s − 1), the same unstable pole with 0.4 s dead time — Section 7 |
+| Case | Process | Sample time |
+|---|---|---|
+| CS1 (easy) | G(s) = 1/(s − 1) — Sections 1–6 | 0.1 s |
+| CS2 (medium) | G(s) = e^(−0.4s)/(s − 1), the same unstable pole with 0.4 s dead time — Section 7 | 0.1 s |
+| CS3 (hard) | the authors' CS3, G(s) = (0.77248 s − 0.1727)/(3.1 s − 1) — Section 8 | 1 |
 
-Section 8 covers running the controller on an STM32F4 microcontroller.
+Section 8 also holds the three-process study: targets fixed before training (published tuning
+rules, the authors' agents, the best fixed PID) and the final method **improved_v6b**, which meets
+every target on average for all three processes. Section 9 covers running the controller on an
+STM32F4 microcontroller.
 
 All numbers below were measured by running this code:
-- **Step-test and robustness numbers:** `results/cs1_*.txt` and `results/cs2_*.txt`.
-- **Training figures:** the training logs (`runs/<case>/*/train_log.txt` or `log.txt`, and `0.monitor.csv`).
+- **Step-test and robustness numbers:** `results/cs1_*.txt`, `results/cs2_*.txt` and `results/cs3_*.txt`.
+- **Training figures:** the training logs (`runs/<case>/*/train_log.txt` or `log.txt`, `0.monitor.csv`
+  and, for improved_v6 onwards, `validation.csv`).
 
 ---
 
@@ -74,6 +79,9 @@ Results are 3-seed averages (overshoot % / settling s / ISE / IAE) unless marked
 | **improved_v4n** | v4 + τi 0.05–1.0, τd 0–0.2 | All v2 agents and 2 of 3 v3 agents pinned τi at 2.0 | 21.8 / 2.13 / 0.123 / 0.289. Beats the authors on 2 of 4 metrics. |
 | **improved_v4n2** | v4n + τi 0.05–0.5 | Fixed-gain check: τi = 0.5 with Kp 9–12.5 beats the authors on all four | **32.0 / 1.37 / 0.127 / 0.256. Beats the authors on all four.** |
 | **improved_v5** | v4 reward + gain ranges chosen per case study from its fixed-gain check | v4n2's ranges contain no stable PID for CS2 | On CS1 identical to improved_v4n2 (same ranges). On CS2 the only working version (Section 7). |
+| **improved_v6** | Gains anchored on the best fixed PID (slider 0 = that PID) + bonus 1 per sample inside the 2 % band + checkpoint chosen on validation tests | Start from a good controller; push settling | Round 1 of Section 8: no seed met every target; the agents drifted away from the anchor PID. |
+| **improved_v6b** | v6 + small starting exploration (std 0.2 instead of 1) | Explore near the anchor | **Final version for all three processes (Section 8):** CS1 19.4 / 1.20 / 0.112 / 0.204 (5 seeds). Meets every target on average for CS1, CS2 and CS3. |
+| **improved_v6c** | v6b + band bonus 5 | Push the CS1 settling time | CS1 only: 22.4 / 1.14 / 0.117 / 0.216, 3 of 5 seeds pass (as v6b). |
 
 An earlier try with the improved reward capped at 5 (instead of 5000) also learned to crash on purpose: ep_len_mean 4.52, test overshoot 10037.5 %. It is not one of the versions in the table.
 
@@ -303,7 +311,154 @@ From `results/cs2_robustness.txt`. Every run of every group completed.
 
 ---
 
-## 8. STM32F4 deployment (ARM Cortex-M4)
+## 8. Three processes: easy, medium, hard
+
+![Step test of the three processes](results/three_processes.png)
+
+*The 0 → 1 step test. Blue: the five improved_v6b agents. Orange: the best published tuning rule.
+Green dashed: the best fixed PID. Red: the authors' agent, from their own result files (CS1, CS3).*
+
+### 8.1 The processes
+
+| Level | Process | Why it is harder |
+|---|---|---|
+| Easy | CS1: 1/(s − 1), dt 0.1 s | unstable pole, no dead time |
+| Medium | CS2: e^(−0.4s)/(s − 1), dt 0.1 s | the same pole plus 0.4 s dead time: a P controller is only stable for about 1 < Kp < 3.3 |
+| Hard | CS3 (authors'): (0.77248 s − 0.1727)/(3.1 s − 1), dt 1 | the authors' hardest case; unstable pole at 1/3.1, small gain, coarse sampling, u limited to ±100 |
+
+`cases/cs3.py` simulates CS3 exactly as the authors' code does. Their code (python-control `tf2ss` +
+`c2d`) computes the output as y = Cx only, so the direct term 0.77248/3.1 is never added, and the
+process they actually simulate is c/(s − a) with a = 1/3.1 and c = 0.02467. Check: replaying the
+gains the authors' agent chose, through our PID and `cases/cs3.py`, reproduces their recorded output
+to within 1.3 × 10⁻¹⁵ and their control input to within 5.7 × 10⁻¹⁴ (the same holds for CS1).
+
+### 8.2 Targets, fixed before any training
+
+For each process, the agents must beat:
+
+- **A. every published tuning rule, on all four metrics:** each metric must be lower than the best value that any rule reaches. The rules are Kaya, *Simple and Optimal PI/PID Tuning Formulae for Unstable Time Delay Processes*, ELECO 2017. Four rules for K e^(−θs)/(Ts − 1): PI and PID, each fitted for minimum ISTE and for minimum IST²E. `core/tuning_rules.py` reproduces the paper's worked examples to within 0.4 % (`tests/test_tuning_rules.py`).
+  - θ = dead time + DT/2 (the usual allowance for the sample-and-hold). CS1: θ/T = 0.05 is below the rules' range (0.1–0.9), so 0.1 is used. CS3: K = c·T = 0.0765, T = 3.1, θ = 0.5.
+  - On our discrete loops the two PID rules end in a sustained oscillation on CS1 and CS3 (their numbers are in `results/cs*_targets.txt`). The best rule is therefore a PI rule on CS1 and CS3, and the IST²E PID rule on CS2.
+- **B. the authors' agent, on all four metrics** (CS1, CS3), scored from their own result files with our scoring.
+- **C. the best fixed PID, on ISE and IAE.** This is the grid-search optimum, tuned on the test itself. The CS2 grid was widened (τi up to 8), because its old optimum lay on the grid edge.
+
+| Process | A. Best rule value per metric (OS / ts / ISE / IAE) | B. Authors' agent | C. Best fixed PID (ISE / IAE) |
+|---|---|---|---|
+| CS1 | 25.9 % / 1.40 s / 0.131 / 0.288 | 57.8 % / 1.70 s / 0.142 / 0.266 | 0.122 / 0.310 |
+| CS2 | 171.4 % / 10.40 s / 2.531 / 2.935 | – | 1.933 / 2.678 |
+| CS3 | 134.4 % / 10.0 / 3.210 / 3.609 | 99.7 % / 58.0 / 11.266 / 17.785 | 1.844 / 3.179 |
+
+The earlier CS1 final agent (improved_v4n2) beats B but not A (overshoot 32.0 % > 25.9 %) or C
+(ISE 0.127 > 0.122). The published rules are much stronger than the old "Classical PI".
+
+### 8.3 The method: improved_v6, v6b, v6c
+
+- **Gains anchored on the best fixed PID** (`ANCHOR_PID` in the case file). Slider 0 is exactly that PID, so the untrained agent already starts as a good controller:
+  - Kp = Kp₀·2^a (Kp₀/2 … 2Kp₀);
+  - τi = τi₀·3^a;
+  - τd = τd₀ + a·span (never below 0).
+- **Reward:** as improved_v4 (error² + overshoot², worst-case crash penalty), plus a bonus for every sample inside the 2 % band of the last setpoint step. The bonus is 1 in v6 and v6b, 5 in v6c.
+- **Checkpoint selection without the final test.** `train.py --select` scores the agent every 50,000 steps on three validation step tests: 0 → 0.5, 0 → 1.5 and 0.8 → 1.6. The score is the average ratio to the anchor PID over the four metrics, and the best checkpoint is kept. The final 0 → 1 test is run only at the end.
+- **improved_v6b** = v6 with a small starting exploration noise (PPO log-std −1.6, std 0.2 instead of 1).
+- 1,000,000 steps per run, PPO with SB3 defaults otherwise. Each run takes 70–85 min with 8 runs in parallel on one 8-core PC.
+
+**Rounds** (the plan allowed at most three):
+
+| Round | Version | What happened |
+|---|---|---|
+| 1 | improved_v6 | 0 of 7 runs passed. With exploration std 1 on sliders of −1…+1, the agents wandered away from the anchor PID: the validation score of every run ended worse than the anchor's. The remaining 8 runs were stopped. |
+| 2 | **improved_v6b** | CS2 and CS3: every seed passes every target. CS1: the average passes, 3 of 5 seeds. |
+| 3 (CS1) | improved_v6c | Also 3 of 5 seeds, with a slightly worse average than v6b. v6b is kept as the one method for all three processes. |
+
+### 8.4 Results (`results/cs*_targets.txt`)
+
+| Process | improved_v6b, average of 5 seeds (OS / ts / ISE / IAE) | A | B | C | Seeds passing every target |
+|---|---|---|---|---|---|
+| CS1 | 19.4 % / 1.20 s / 0.112 / 0.204 | yes | yes | yes | 3 of 5 |
+| CS2 | 92.5 % / 6.88 s / 1.332 / 2.070 | yes | – | yes | **5 of 5** |
+| CS3 | 33.1 % / 6.2 / 1.174 / 1.727 | yes | yes | yes | **5 of 5** |
+
+**Every seed:**
+
+| | seed 0 | seed 1 | seed 2 | seed 3 | seed 4 |
+|---|---|---|---|---|---|
+| CS1 | 19.8 / 1.50 / 0.116 / 0.233 | 17.4 / 1.60 / 0.111 / 0.220 | 15.1 / 0.90 / 0.106 / 0.164 | 19.1 / 0.90 / 0.110 / 0.184 | 25.6 / 1.10 / 0.119 / 0.218 |
+| CS2 | 87.6 / 7.90 / 1.407 / 2.240 | 120.5 / 5.80 / 1.545 / 2.062 | 78.9 / 7.90 / 1.183 / 1.988 | 83.2 / 5.70 / 1.214 / 1.960 | 92.5 / 7.10 / 1.311 / 2.100 |
+| CS3 | 36.4 / 6.00 / 1.196 / 1.742 | 32.0 / 8.00 / 1.188 / 1.759 | 32.1 / 5.00 / 1.136 / 1.599 | 25.1 / 7.00 / 1.122 / 1.721 | 39.8 / 5.00 / 1.228 / 1.815 |
+
+The two CS1 seeds that fail (0 and 1) miss only one target. They settle in 1.50 s and 1.60 s,
+against 1.40 s for the Kaya IST²E PI rule; their overshoot, ISE and IAE beat every target.
+
+Compared with the earlier versions:
+
+| Process | Earlier best version (average) | improved_v6b (average) |
+|---|---|---|
+| CS1 | improved_v4n2: 32.0 % / 1.37 s / 0.127 / 0.256 | 19.4 % / 1.20 s / 0.112 / 0.204, better on all four |
+| CS2 | improved_v5: 103.4 % / 7.37 s / 1.795 / 2.763 | 92.5 % / 6.88 s / 1.332 / 2.070, better on all four |
+| CS3 | authors' agent: 99.7 % / 58.0 / 11.266 / 17.785 | 33.1 % / 6.2 / 1.174 / 1.727, ISE about 10× lower |
+
+### 8.5 Robustness (`results/cs*_robustness.txt`, no re-training)
+
+ISE (group averages; noise scenarios averaged over 10 noise seeds):
+
+| CS1 | nominal | noise 0.01 | noise 0.05 | a = 0.8 | a = 1.2 | K = 0.8 | K = 1.2 |
+|---|---|---|---|---|---|---|---|
+| improved_v6b | **0.112** | **0.116** | 0.188 | **0.110** | **0.115** | **0.121** | **0.117** |
+| improved_v4n2 | 0.127 | 0.131 | 0.201 | 0.124 | 0.131 | 0.144 | 0.120 |
+| Kaya 2017 PI (ISTE) | 0.131 | 0.134 | **0.184** | 0.125 | 0.137 | 0.150 | 0.124 |
+| Best fixed PID | 0.122 | 0.126 | 0.199 | 0.118 | 0.127 | 0.130 | 0.130 |
+
+| CS2 | nominal | noise 0.01 | noise 0.05 | delay 0.3 | delay 0.5 | K = 0.8 | K = 1.2 |
+|---|---|---|---|---|---|---|---|
+| improved_v6b | **1.332** | **1.329** | **1.389** | **1.120** | 6.579 | **1.937** | 3.430 |
+| improved_v5 | 1.795 | 1.801 | 1.882 | 1.476 | **3.841** | 2.464 | **2.474** |
+| Kaya 2017 PID (IST2E) | 2.531 | 2.538 | 2.689 | 1.221 | 3554.9 | 2.584 | 2664.2 |
+| Best fixed PID | 1.933 | 1.949 | 2.133 | 1.408 | 4.726 | 2.725 | 427.8 |
+
+| CS3 | nominal | noise 0.01 | noise 0.05 | pole −20 % | pole +20 % | K = 0.8 | K = 1.2 |
+|---|---|---|---|---|---|---|---|
+| improved_v6b | **1.174** | **1.235** | **2.635** | **1.126** | **1.239** | **1.454** | 1.464 |
+| improved_v6 | 1.383 | 1.437 | 2.638 | 1.290 | 1.502 | 2.101 | **1.200** |
+| Kaya 2017 PI (IST2E) | 3.210 | 3.474 | 8.309 | 3.060 | 3.376 | 2.018 | 314.6 |
+| Best fixed PID | 1.844 | 1.934 | 3.687 | 1.645 | 2.097 | 2.130 | 2.468 |
+
+- Every run of every scenario completed (no controller ran away).
+- improved_v6b has the lowest ISE in 6 of 7 CS1 scenarios and 7 of 7 CS3 scenarios against the fixed controllers.
+- On CS2 it is weaker with a longer dead time (0.5 s) and K = 1.2: it overshoots more than improved_v5 there. The published PID rule and the fixed PID still do much worse in those two scenarios: the rule oscillates without settling, and the fixed PID does not settle at K = 1.2.
+
+### 8.6 Extra tests (`extra_tests.py`, `results/cs*_extra_tests.txt`)
+
+Two tests the agents were never trained or selected on.
+
+**Load disturbance:** a constant extra input d = 20 % of the steady-state control input, 100 samples
+after the step. Values are the averages after d.
+
+| | CS1: peak / recovery / IAE | CS2: peak / recovery / IAE | CS3: peak / recovery / IAE |
+|---|---|---|---|
+| improved_v6b | 0.021 / 0.14 s / **0.011** | 0.166 / 3.74 s / 0.303 | 0.079 / 6.2 / 0.385 |
+| best published rule (by nominal ISE) | 0.024 / 0.30 s / 0.017 | 0.174 / 4.50 s / 0.237 | 0.076 / 3.0 / 0.130 |
+| Best fixed PID | 0.021 / 0.10 s / 0.022 | 0.161 / 2.90 s / 0.256 | 0.076 / 4.0 / 0.234 |
+
+**New setpoint changes** (ISE of the last step):
+
+| | 0 → 0.25 | 0 → 1.9 | 1.5 → 0.5 (down) |
+|---|---|---|---|
+| CS1 improved_v6b / best fixed PID | 0.007 / 0.008 | **0.399** / 0.441 | 0.135 / 0.122 |
+| CS2 improved_v6b / best fixed PID | 0.139 / 0.121 | **3.611** / 6.978 | 3.029 / 1.934 |
+| CS3 improved_v6b / best fixed PID | **0.095** / 0.115 | **4.173** / 6.582 | 2.007 / 1.844 |
+
+What this shows, honestly:
+- **Large steps:** the agents are clearly best on the large step (0 → 1.9), on all three processes.
+- **Small steps:** on the small step (0 → 0.25) they are as good as or better than the fixed controllers, except on CS2.
+- **Down-steps:** on the step down they are worse than the best fixed PID on all three processes. Training only ever used random setpoints between 0 and 2, so down-steps were seen, but the validation tests that choose the checkpoint were all upward.
+- **Disturbances:** the agents never saw a disturbance in training. On CS1 they reject it best, on CS2 they are in between, and on CS3 they recover more slowly than the fixed controllers (6.2 against 3–4 samples).
+
+Training with disturbances and adding a down-step to the validation tests are the obvious next
+improvements.
+
+---
+
+## 9. STM32F4 deployment (ARM Cortex-M4)
 
 The trained controller was ported to C for the **STM32F407G-DISC1** board; see `stm32/README.md`.
 
@@ -313,18 +468,32 @@ The trained controller was ported to C for the **STM32F407G-DISC1** board; see `
 
 | Agent | Python (double) | C (float) | Largest output difference |
 |---|---|---|---|
+| CS1 improved_v6b seed 2 (firmware default) | 15.1 % / 0.90 s / 0.106 / 0.164 | 15.1 % / 0.90 s / 0.106 / 0.164 | 8.5 × 10⁻⁸ |
+| CS2 improved_v6b seed 3 | 83.2 % / 5.70 s / 1.214 / 1.960 | 83.2 % / 5.70 s / 1.214 / 1.960 | 2.8 × 10⁻⁷ |
+| CS3 improved_v6b seed 3 | 25.1 % / 7.00 / 1.122 / 1.721 | 25.1 % / 7.00 / 1.122 / 1.721 | 1.4 × 10⁻⁷ |
 | CS1 improved_v4n2 seed 0 | 32.0 % / 1.30 s / 0.128 / 0.255 | 32.0 % / 1.30 s / 0.128 / 0.255 | 7.6 × 10⁻⁸ |
 | CS2 improved_v5 seed 0 | 87.3 % / 8.30 s / 1.562 / 2.692 | 87.3 % / 8.30 s / 1.562 / 2.692 | 3.2 × 10⁻⁷ |
 
-**Firmware build** (`stm32/build.bat`, arm-none-eabi-gcc 13.3 from STM32CubeIDE, STM32CubeF4 1.28.3): no warnings. The simulated-process version uses 42,696 bytes of code + 468 bytes of initialised data, and 3,664 bytes of RAM; the real-process version uses 44,336 bytes of code.
+The improved_v6b agents shown are each process's seed with the best **validation** score (not the
+best test score). The C code supports both gain mappings (linear ranges and the anchor mapping).
+
+**Firmware build** (`stm32/build.bat`, arm-none-eabi-gcc 13.3 from STM32CubeIDE, STM32CubeF4 1.28.3): no warnings. With the improved_v6b agent the simulated-process version uses 44,584 bytes of code + 468 bytes of initialised data, and 3,664 bytes of RAM (with improved_v4n2 it was 42,696 bytes of code; the anchor mapping adds `powf`).
 
 **Not yet done:** no board was connected when the firmware was built, so it has not been run on hardware, and the on-chip timing of one network decision has not been measured. The firmware prints both after `stm32\flash.bat`.
 
 ---
 
-## 9. Conclusions
+## 10. Conclusions
 
-1. **The final version, improved_v4n2, beats the authors' agent on all four metrics, for each of its 3 seeds and on average:**
+1. **Three processes, one method (Section 8).** improved_v6b meets every target fixed before training, on average, for the easy, medium and hard process. It beats all published tuning rules on all four metrics, the authors' agents on all four metrics, and the grid-search fixed PID on ISE and IAE.
+   - CS2 and CS3: 5 of 5 seeds pass every target.
+   - CS1: 3 of 5 seeds pass; the other two miss only the 1.40 s settling time of the best rule.
+   - On the authors' hardest process (CS3) the ISE is about 10× lower than their agent's: 1.174 against 11.266.
+2. **What made improved_v6b work:**
+   - Start from a good controller: the gains are anchored on the best fixed PID.
+   - Explore near it: small starting noise. With the default noise the agents drifted away (round 1).
+   - Choose the checkpoint on validation tests, never on the final test.
+3. **Earlier CS1 result (improved_v4n2, Sections 4–6):** it beats the authors' agent on all four metrics, for each of its 3 seeds and on average:
 
    | Metric | Authors | improved_v4n2 average |
    |---|---|---|
@@ -334,19 +503,28 @@ The trained controller was ported to C for the **STM32F407G-DISC1** board; see `
    | IAE | 0.266 | 0.256 |
 
    The three seeds are close together: overshoot 31.5–32.5 %, settling 1.30–1.40 s.
-2. **What made the difference:**
+4. **What made the difference for improved_v4n2:**
    - Closing the crash loophole (worst-case crash penalty).
    - Penalising overshoot.
    - Most important, limiting the integral time τi to 0.05–0.5 s. The improved_v2 and improved_v4n agents pushed τi to the top of their allowed range (2.0 and about 1.0). A fixed-gain check showed that with τi = 1.0 the response never settles within 1.70 s, while τi = 0.5 does.
-3. **Robustness:** improved_v4n2 keeps its fast settling under ±20 % model mismatch, and is ahead of the paper group in most scenarios.
-4. **CS2 (dead time): the gain ranges have to fit the process.**
+5. **Robustness:**
+   - improved_v4n2 keeps its fast settling under ±20 % model mismatch, and is ahead of the paper group in most scenarios.
+   - improved_v6b has the lowest ISE in 6 of 7 CS1 and 7 of 7 CS3 robustness scenarios. On CS2 it is weaker with a 0.5 s dead time and with K = 1.2 (Section 8.5).
+6. **CS2 (dead time): the gain ranges have to fit the process.**
    - Every version tuned on CS1 fails on CS2: paper and improved learn to do nothing, and v2 to v4n2 oscillate.
-   - improved_v5, with ranges taken from CS2's own fixed-gain check, is the only working version. On average it beats the grid-search fixed PID on overshoot, settling and ISE (not IAE), and it stays bounded where that PID breaks down (K = 1.2, dead time 0.5 s).
-5. **Microcontroller:** the trained controller runs in plain C with the same step-test results as Python, and the STM32F407 firmware builds in about 43 KB of flash.
+   - improved_v5, with ranges taken from CS2's own fixed-gain check, was the first working version. improved_v6b improves on it in all four metrics.
+7. **Microcontroller:** the trained controllers of all three processes run in plain C with the same step-test results as Python, and the STM32F407 firmware builds in about 45 KB of flash.
 
-## 10. Limitations
+## 11. Limitations
 
-- **Three seeds** per version is a small sample (improved_v4: one seed).
+- **Seeds:** 5 seeds for improved_v6b; 3 seeds for the earlier versions (improved_v4: one seed; round-1 improved_v6: 3 / 2 / 2 seeds, because the rest were stopped).
+- **Not every CS1 seed passes:** 2 of 5 improved_v6b seeds miss the 1.40 s settling target (1.50 s and 1.60 s). The plan allowed three rounds and no more, so CS1 is reported as it stands.
+- **Where the agents are weaker (Section 8.6):**
+  - on steps down, the best fixed PID is better on all three processes;
+  - after a load disturbance, the CS3 agents recover more slowly than the fixed controllers;
+  - on CS2 with a longer dead time (0.5 s), improved_v5 does better.
+  None of these were in the training or the validation tests.
+- **The published rules are continuous-time rules on a discrete loop.** Two of the four oscillate on CS1 and CS3 at our sample times. The targets use the best rule value per metric, so these two rules do not lower the bar.
 - **The baselines are tuned on the test itself.** The fixed-gain baselines were tuned on the very step test they are scored on; the RL agents never saw it. The best fixed 2-DOF PID reaches ISE 0.100, the lowest possible value on this test.
 - **Settling under noise:** the 2 % settling time stops separating the controllers once sensor noise is added.
 - **Differences from the paper:**
@@ -354,17 +532,21 @@ The trained controller was ported to C for the **STM32F407G-DISC1** board; see `
   - The paper's classical PID (71.08 % / 3.10 s) could not be reproduced; there is no classical PID in their code.
 - **CS2:**
   - The paper gives no numbers for this process.
-  - The standard grid search stops at τi = 2.0; a wider search finds a slightly better fixed PID (ISE 1.929 instead of 1.980).
+  - The CS2 grid now goes up to τi = 8. The old grid stopped at τi = 2.0, where its optimum lay; the best fixed PID is now ISE 1.933 instead of 1.980. The earlier CS2 sections (7) quote the old value.
+  - The best fixed 2-DOF PID of CS2 still lies on the τi = 8 edge. It is only a side reference, not a target.
 - **STM32:** the firmware has been built and the C code checked on a PC, but it has not yet run on a board.
 
-## 11. How to reproduce
+## 12. How to reproduce
 
 ```
-.\run grid_search.py cs1                  (and cs2)
-.\run evaluate.py cs1                     (and cs2)
-.\run robustness.py cs1                   (and cs2)
-.\run train.py cs1 improved_v4n2 0        (one new training run, about 8 min)
-.\run stm32\verify_on_pc.py cs1 improved_v4n2_seed0
+.\run grid_search.py cs1                  (and cs2, cs3)
+.\run evaluate.py cs1                     (and cs2, cs3)
+.\run targets.py cs1                      (pass/fail against the targets; and cs2, cs3)
+.\run robustness.py cs1                   (and cs2, cs3)
+.\run extra_tests.py cs1                  (load disturbance, new setpoints; and cs2, cs3)
+.\run plot_three.py                       (results/three_processes.png)
+.\run train.py cs3 improved_v6b 0 1000000 --select     (one new training run, about 35-70 min)
+.\run stm32\verify_on_pc.py cs1 improved_v6b_seed2
 stm32\build.bat
 ```
 
