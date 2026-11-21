@@ -171,7 +171,16 @@ test through the protocol gives exactly the Python numbers for all three process
 | CS3 improved_v6b seed 3 | 25.1 % / 7.00 / 1.122 / 1.721 | 25.1 % / 7.00 / 1.122 / 1.721 |
 
 The firmware in `pc` mode builds with no warnings: 51,180 bytes of code, 3,920 bytes of RAM.
-**Not yet run with the real board** (none was connected); the first `pc_plant.py test` on the board is that check.
+**With the real board (21 Nov 2026):** the board was found (`STM32_Programmer_CLI -l st-link`: ST-LINK FW V2J46M33,
+board STM32F4DISCOVERY), the `pc` firmware was built (51,180 bytes of code) and flashed and verified for all three agents,
+and Windows shows the ST-LINK virtual COM port (COM9, USB 0483:374B). But `pc_plant.py test` gets **no answer**: on the
+STM32F407G-DISC1 the ST-LINK's virtual COM port is **not wired to the STM32F407's USART2** (PA2/PA3), so not one byte
+arrives on COM9, even right after a reset. So the loop through the real board has **not** been run yet, and the board's
+controller time (cycles) is not measured.
+
+**What is needed:** a 3.3 V USB-to-serial adapter (for example CP2102 or FT232 set to 3.3 V) connected to the board:
+adapter RX → **PA2** (board TX), adapter TX → **PA3** (board RX), GND → **GND**. Then run
+`.\run stm32\pc_plant.py test --port COMx` with that adapter's port. Nothing in the firmware has to change.
 
 ## 7. Run it without a board: simulated STM32 (Renode)
 
