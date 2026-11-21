@@ -550,10 +550,17 @@ best test score). The C code supports both gain mappings (linear ranges and the 
 the agent and the PID; the process runs on the PC (`stm32/pc_plant.py`).
 - **The exchange:** every sample, the PC sends the setpoint and the measured output over the UART as one text line, and the board answers with the control input and the gains it chose (protocol in `stm32/firmware/Inc/hil.h`).
 - **Tested without a board:** the board's controller code is compiled on the PC and driven through the same protocol (`pc_plant.py --sim`). The step test then gives exactly the Python numbers for all three processes.
-- **Not yet tested on the board:** none was connected.
+- **On the board:** see *Hardware results* below.
 - **Size:** the firmware in this mode builds with no warnings, at 51,180 bytes of code.
 
 **Firmware build** (`stm32/build.bat`, arm-none-eabi-gcc 13.3 from STM32CubeIDE, STM32CubeF4 1.28.3): no warnings. With the improved_v6b agent the simulated-process version uses 44,584 bytes of code + 468 bytes of initialised data, and 3,664 bytes of RAM (with improved_v4n2 it was 42,696 bytes of code; the anchor mapping adds `powf`).
+
+**Hardware results (21 Nov 2026).** The STM32F407G-DISC1 was connected by its ST-LINK USB port. The `pc` firmware
+was built and flashed (and verified) for CS1, CS2 and CS3, and the board ended with CS1. The PC could not exchange data
+with it: on this board the ST-LINK's virtual COM port is not wired to the STM32's UART (PA2/PA3), and no byte arrived on
+the port, even after a reset. The loop through the real board therefore needs a 3.3 V USB-to-serial adapter on PA2 (TX),
+PA3 (RX) and GND. Until then the check was run with the board's controller code compiled on the PC
+(`pc_plant.py test --sim`): PASS for all three agents, with exactly the Python numbers in the table above.
 
 **Not yet done:** no board was connected when the firmware was built, so it has not been run on hardware, and the on-chip timing of one network decision has not been measured. The firmware prints both after `stm32\flash.bat`.
 
